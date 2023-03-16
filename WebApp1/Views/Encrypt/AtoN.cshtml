@@ -1,0 +1,27 @@
+﻿@using WebApp1.Models;
+@model AtoN
+@{
+    ViewData["Title"] = "Home page";
+    //if (Request.QueryString)
+}
+<h1>AtoN</h1>
+
+
+<form method="post" asp-action="AtoN">
+    <div asp-validation-summary="All"></div>
+    <label asp-for="Key"></label>
+    <input asp-for="Key" />
+    <br />
+    <label asp-for="Text"></label>
+    <input asp-for="Text" />
+    <br />
+    <button type="submit" class="btn btn-primary">Encrypt</button>
+    <br />
+</form>
+<br />
+@if (TempData["success"] != null)
+{
+    <h4>Encrypted:</h4>
+    <br />
+    @Html.Label(TempData["success"].ToString())
+}
