@@ -6,19 +6,20 @@
 }
 <h1>start - end</h1>
 
-
-<form method="post" asp-action="StartEnd">
+<div class="container" style="width:stretch">
+<form method="post" asp-action="StartEnd" style="width:inherit">
     <div asp-validation-summary="All"></div>
     <label asp-for="Text"></label>
-    <input style="width=50" asp-for="Text" />
+        <textarea asp-for="Text" cols="999999999" rows="5"></textarea>
     <br />
     <button type="submit" class="btn btn-primary">Encrypt</button>
     <br />
 </form>
 <br />
-@if (TempData["success"] != null)
+@if ((bool?)TempData["success"] ?? false)
 {
     <h4>Encrypted:</h4>
     <br />
-    @Html.Label(TempData["success"].ToString())
+        @Html.TextArea("Encrypted",TempData["Encrypted"]?.ToString(), new { @readonly = "readonly", cols="999999999", rows="5"})
 }
+</div>

@@ -9,6 +9,7 @@ namespace WebApp1.Models
         int Id { get; set; }
 
         [Required]
+        [DataType(DataType.MultilineText)]
         string Text { get; set; }
 
         string Encrypt();

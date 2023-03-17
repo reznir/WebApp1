@@ -20,16 +20,24 @@ namespace WebApp1.Controllers
 
         public IActionResult StartEnd(StartEnd cipher)
         {
-            TempData["success"] = cipher.Encrypt();
+            AssignTempData(cipher);
             return View("StartEnd", cipher);
         }
 
         [HttpPost]
         public IActionResult AtoN(AtoN cipher)
         {
-            
-            TempData["success"] = cipher.Encrypt();
-            return View("AtoN",cipher);
+            AssignTempData(cipher);
+            return View("AtoN", cipher);
+        }
+
+        private void AssignTempData(ICipher cipher)
+        {
+            if (ModelState.IsValid)
+            {
+                TempData["success"] = !string.IsNullOrWhiteSpace(cipher.Encrypt());
+                TempData["Encrypted"] = cipher.Encrypted;
+            }
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

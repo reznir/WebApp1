@@ -1,4 +1,5 @@
-﻿using WebApp1.Models;
+﻿using System.ComponentModel.DataAnnotations;
+using WebApp1.Models;
 
 namespace WebApp1.Models
 {
@@ -6,6 +7,7 @@ namespace WebApp1.Models
     {
         public string Encrypted { get; set; }
         public int Id { get; set; }
+        [DataType(DataType.MultilineText)]
         public string Text { get; set; }
 
         public StartEnd()
@@ -22,24 +24,34 @@ namespace WebApp1.Models
 
         public string Encrypt()
         {
-            var words = Text.Split(" ");
-            foreach (var word in words)
+            try
             {
-                char[] letters = word.ToCharArray();
-                for (int i = 1; i <= letters.Length; i++)
+                var words = Text.Split(" ");
+                foreach (var word in words)
                 {
-                    if (i % 2 == 0)
+                    char[] letters = word.ToCharArray();
+                    char[] encoded = new char[letters.Length];
+                    for (int i = 0; i < letters.Length; i++)
                     {
-                        letters[letters.Length - (i / 2)] = letters[i -1];
+                        if (letters[i] == ',' || letters[i] == '.' || letters[i] == '-' || letters[i] == '?' || letters[i] == '!' || letters[i] == ';')
+                        { continue; }
+                        if (i % 2 == 0)
+                        {
+                            encoded[i / 2] = letters[i];
+                        }
+                        else
+                        {
+                            encoded[letters.Length - (i / 2) - 1] = letters[i];
+                        }
                     }
-                    else
-                    {
-                        letters[i / 2] = letters[i - 1];
-                    }
+                    Encrypted = string.Concat(Encrypted, new string(encoded), " ");
                 }
-                Encrypted = string.Concat(Encrypted, new string(letters), " ");                
+                return Encrypted;
             }
-            return Encrypted;
+            catch
+            {
+                return string.Empty;
+            }
         }
     }
 }

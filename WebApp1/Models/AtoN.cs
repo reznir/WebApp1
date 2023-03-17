@@ -1,4 +1,6 @@
 ﻿
+using System.ComponentModel.DataAnnotations;
+
 namespace WebApp1.Models
 {
     public class AtoN : ICipher
@@ -7,6 +9,7 @@ namespace WebApp1.Models
 
         public string Key { get; set; }
 
+        [DataType(DataType.MultilineText)]
         public string Text { get; set; }
         public string Encrypted { get; set; }
 
@@ -26,22 +29,27 @@ namespace WebApp1.Models
 
         public string Encrypt()
         {
-            var text = Text.ToLower();
-            int keyLength = Key.Length;
-            int keyPointer = 0;
-            var keyChars = Key.ToCharArray();
-            foreach (char letter in text.ToCharArray())
+            try
             {
-                if (((short)letter) < 97 || ((short)letter) > 122)
+                string text = Text.ToLower();
+                int keyLength = Key.Length;
+                int keyPointer = 0;
+                char[] keyChars = Key.ToCharArray();
+                foreach (char letter in text.ToCharArray())
                 {
-                    Encrypted = string.Concat(Encrypted, letter);
-                    continue;
+                    if (((short)letter) < 97 || ((short)letter) > 122)
+                    {
+                        Encrypted = string.Concat(Encrypted, letter);
+                        continue;
+                    }
+                    int a = ((Convert.ToInt16(letter) + Convert.ToInt16(keyChars[keyPointer]) - 2 * 97) % 26) + 97;
+                    Encrypted = string.Concat(Encrypted, Convert.ToChar(((Convert.ToInt16(letter) + Convert.ToInt16(keyChars[keyPointer]) - 2 * 97) % 26) + 97));
+                    keyPointer = ++keyPointer % keyLength;
                 }
-                int a = ((Convert.ToInt16(letter) + Convert.ToInt16(keyChars[keyPointer]) - 2 * 97) % 26) + 97;
-                Encrypted = string.Concat(Encrypted, Convert.ToChar(((Convert.ToInt16(letter) + Convert.ToInt16(keyChars[keyPointer]) - 2 * 97) % 26) + 97));
-                keyPointer = ++keyPointer % keyLength;
+                return Encrypted;
             }
-            return Encrypted;
+            catch 
+            { return string.Empty; }
         }
     }
 }
