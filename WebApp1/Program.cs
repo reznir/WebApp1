@@ -1,7 +1,11 @@
+using Microsoft.EntityFrameworkCore;
+using WebApp1.DataAccess;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<LitTextyDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("AmazonConnectionString")));
 
 var app = builder.Build();
 

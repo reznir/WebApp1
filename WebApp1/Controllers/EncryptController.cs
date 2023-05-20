@@ -31,6 +31,12 @@ namespace WebApp1.Controllers
             return View("AtoN", cipher);
         }
 
+        public IActionResult Morse(Morseovka cipher)
+        {
+            AssignTempData(cipher);
+            return View("Morseovka", cipher);
+        }
+
         private void AssignTempData(ICipher cipher)
         {
             if (ModelState.IsValid)
