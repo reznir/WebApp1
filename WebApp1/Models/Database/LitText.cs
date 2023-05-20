@@ -8,15 +8,19 @@ namespace WebApp1.Models
     {
         [Column("ID")]
         public int Id { get; set; }
+
         [Column("NAZEV_DNE",TypeName ="NVARCHAR(50)")]
         public string Nazev_dne { get; set; }
+
         [Column("CYKLUS",TypeName ="NVARCHAR(1)")]
-        public string Cyklus { get; set; }
+        public string? Cyklus { get; set; }
+
         [Column("TEXT",TypeName ="NVARCHAR(MAX)")]
-        public string Text { get; set; }
-        [Column("SVATEK_ID")]
-        public int SvateId { get; set; }
-        public virtual Svatek NavSvatek { get; set; }
+        public string? Text { get; set; }
+
+        [Column("SVATEK_ID"),ForeignKey("Svatek")]
+        public int? SvateId { get; set; }
+        public Svatek? Svatek { get; set; }
 
     }
 }

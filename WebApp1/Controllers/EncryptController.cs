@@ -1,16 +1,18 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
+using WebApp1.DataAccess;
 using WebApp1.Models;
 
 namespace WebApp1.Controllers
 {
     public class EncryptController : Controller
     {
-        private readonly ILogger<EncryptController> _logger;
+        private readonly LitTextyDbContext context;
 
-        public EncryptController(ILogger<EncryptController> logger)
+        public EncryptController(LitTextyDbContext Context)
         {
-            _logger = logger;
+            context = Context ?? throw new ArgumentNullException();
         }
 
         public IActionResult AtoN()

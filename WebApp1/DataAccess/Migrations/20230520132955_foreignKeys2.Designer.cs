@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApp1.DataAccess;
 
@@ -11,9 +12,11 @@ using WebApp1.DataAccess;
 namespace WebApp1.DataAccess.Migrations
 {
     [DbContext(typeof(LitTextyDbContext))]
-    partial class LitTextyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230520132955_foreignKeys2")]
+    partial class foreignKeys2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,6 +59,7 @@ namespace WebApp1.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Cyklus")
+                        .IsRequired()
                         .HasColumnType("NVARCHAR(1)")
                         .HasColumnName("CYKLUS");
 
@@ -64,17 +68,16 @@ namespace WebApp1.DataAccess.Migrations
                         .HasColumnType("NVARCHAR(50)")
                         .HasColumnName("NAZEV_DNE");
 
-                    b.Property<int?>("SvateId")
+                    b.Property<int>("SvateId")
                         .HasColumnType("int")
                         .HasColumnName("SVATEK_ID");
 
                     b.Property<string>("Text")
+                        .IsRequired()
                         .HasColumnType("NVARCHAR(MAX)")
                         .HasColumnName("TEXT");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("SvateId");
 
                     b.ToTable("LIT_TEXT");
                 });
@@ -116,27 +119,7 @@ namespace WebApp1.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("DobaId");
-
                     b.ToTable("SVATEK");
-                });
-
-            modelBuilder.Entity("WebApp1.Models.LitText", b =>
-                {
-                    b.HasOne("WebApp1.Models.Svatek", "Svatek")
-                        .WithMany()
-                        .HasForeignKey("SvateId");
-
-                    b.Navigation("Svatek");
-                });
-
-            modelBuilder.Entity("WebApp1.Models.Svatek", b =>
-                {
-                    b.HasOne("WebApp1.Models.Doba", "Doba")
-                        .WithMany()
-                        .HasForeignKey("DobaId");
-
-                    b.Navigation("Doba");
                 });
 #pragma warning restore 612, 618
         }

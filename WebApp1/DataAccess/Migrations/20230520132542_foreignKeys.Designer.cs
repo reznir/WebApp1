@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApp1.DataAccess;
 
@@ -11,9 +12,11 @@ using WebApp1.DataAccess;
 namespace WebApp1.DataAccess.Migrations
 {
     [DbContext(typeof(LitTextyDbContext))]
-    partial class LitTextyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230520132542_foreignKeys")]
+    partial class foreignKeys
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -56,25 +59,30 @@ namespace WebApp1.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Cyklus")
+                        .IsRequired()
                         .HasColumnType("NVARCHAR(1)")
                         .HasColumnName("CYKLUS");
+
+                    b.Property<int>("NavSvatekId")
+                        .HasColumnType("int");
 
                     b.Property<string>("Nazev_dne")
                         .IsRequired()
                         .HasColumnType("NVARCHAR(50)")
                         .HasColumnName("NAZEV_DNE");
 
-                    b.Property<int?>("SvateId")
+                    b.Property<int>("SvateId")
                         .HasColumnType("int")
                         .HasColumnName("SVATEK_ID");
 
                     b.Property<string>("Text")
+                        .IsRequired()
                         .HasColumnType("NVARCHAR(MAX)")
                         .HasColumnName("TEXT");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("SvateId");
+                    b.HasIndex("NavSvatekId");
 
                     b.ToTable("LIT_TEXT");
                 });
@@ -123,11 +131,13 @@ namespace WebApp1.DataAccess.Migrations
 
             modelBuilder.Entity("WebApp1.Models.LitText", b =>
                 {
-                    b.HasOne("WebApp1.Models.Svatek", "Svatek")
+                    b.HasOne("WebApp1.Models.Svatek", "NavSvatek")
                         .WithMany()
-                        .HasForeignKey("SvateId");
+                        .HasForeignKey("NavSvatekId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    b.Navigation("Svatek");
+                    b.Navigation("NavSvatek");
                 });
 
             modelBuilder.Entity("WebApp1.Models.Svatek", b =>
