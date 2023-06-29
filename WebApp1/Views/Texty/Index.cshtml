@@ -4,38 +4,44 @@
 <h1>Texty</h1>
 <body>
     <ul id="myUL">
-        <li>
-            @foreach(Doba doba in Model.Doba)
-            {
+        @foreach (Doba doba in Model.Doba.ToList())
+        {
+            <li>
                 <span class="caret">@doba.CelyNazev</span>
                 <ul class="nested">
-                @foreach(Svatek svatek in Model.Svatek.Where(s => s.DobaId == doba.Id).ToList())
-                {
-                    <li>@svatek.Cely_nazev</li>
-                }
+                    @foreach (Svatek svatek in Model.Svatek.Where(s => s.DobaId == doba.Id).ToList())
+                    {
+                        <li>@svatek.Cely_nazev</li>
+                    }
                 </ul>
-            }
-            <span class="caret">Doby</span>
+            </li>
+        }
+    </ul>
+    <ul id="myUL">
+        <li>
+            <span class="caret">Advetni</span>
             <ul class="nested">
-                <li>Water</li>
-                <li>Coffee</li>
+                <li>1.</li>
+                <li>2.</li>
+            </ul>
+        </li>
+        <li>
+            <span class="caret">Tea</span>
+            <ul class="nested">
+                <li>Black Tea</li>
+                <li>White Tea</li>
                 <li>
-                    <span class="caret">Tea</span>
+                    <span class="caret">Green Tea</span>
                     <ul class="nested">
-                        <li>Black Tea</li>
-                        <li>White Tea</li>
-                        <li>
-                            <span class="caret">Green Tea</span>
-                            <ul class="nested">
-                                <li>Sencha</li>
-                                <li>Gyokuro</li>
-                                <li>Matcha</li>
-                                <li>Pi Lo Chun</li>
-                            </ul>
-                        </li>
+                        <li>Sencha</li>
+                        <li>Gyokuro</li>
+                        <li>Matcha</li>
+                        <li>Pi Lo Chun</li>
                     </ul>
                 </li>
             </ul>
         </li>
+    </ul>
+    </li>
     </ul>
 </body>
