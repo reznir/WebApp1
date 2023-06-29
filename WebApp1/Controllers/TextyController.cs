@@ -15,5 +15,18 @@ namespace WebApp1.Controllers
         {
             return View(context);
         }
+
+        [HttpPost]
+        public IActionResult Index(string text)
+        {
+            var a = text.GetType();
+            var b = text.ToString();
+            return View(context);
+        }
+
+        public IActionResult adventni1()
+        {
+            return View(context);
+        }
     }
 }
