@@ -1,47 +1,63 @@
 ﻿@using WebApp1.DataAccess;
 @model LitTextyDbContext
+@{
+    ViewData["Title"] = "Liturgicke texty";
+}
 
 <h1>Texty</h1>
-<body>
-    <ul id="myUL">
-        @foreach (Doba doba in Model.Doba.ToList())
-        {
-            <li>
-                <span class="caret">@doba.CelyNazev</span>
-                <ul class="nested">
-                    @foreach (Svatek svatek in Model.Svatek.Where(s => s.DobaId == doba.Id).ToList())
-                    {
-                        <li>@svatek.Cely_nazev</li>
-                    }
-                </ul>
-            </li>
+<head>
+    <style>
+        aside {
+            width: 30%;
+            float: left;
+            background-color: var(--bs-gray-dark);
+            margin-right: 20px;
+            max-width: 170px;
         }
-    </ul>
-    <ul id="myUL">
-        <li>
-            <span class="caret">Advetni</span>
-            <ul class="nested">
-                <li>1.</li>
-                <li>2.</li>
-            </ul>
-        </li>
-        <li>
-            <span class="caret">Tea</span>
-            <ul class="nested">
-                <li>Black Tea</li>
-                <li>White Tea</li>
+    </style>
+    <script src="https://cdn.tiny.cloud/1/pe9vrlfk8d5dm7ma9g0na5ej7zzhlhw48irehlx4uwvdkr00/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+</head>
+<body>
+    <aside>
+        <ul id="myUL">
+            @foreach (Doba doba in Model.Doba.ToList())
+            {
                 <li>
-                    <span class="caret">Green Tea</span>
+                    <span class="caret">@doba.CelyNazev</span>
                     <ul class="nested">
-                        <li>Sencha</li>
-                        <li>Gyokuro</li>
-                        <li>Matcha</li>
-                        <li>Pi Lo Chun</li>
+                        @foreach (Svatek svatek in Model.Svatek.Where(s => s.DobaId == doba.Id).ToList())
+                        {
+                            <li><a asp-controller="Texty" asp-action=@svatek.Nazev_dne asp-route-id=@svatek.Id> @svatek.Cely_nazev</a></li>
+                        }
                     </ul>
                 </li>
-            </ul>
-        </li>
-    </ul>
-    </li>
-    </ul>
+            }
+        </ul>
+    </aside>
+    <form method="post" asp-controller="Texty" asp-action="Index">
+        <div class="topControls">
+            <label>Cyklus: </label>
+            @Html.DropDownList("cyklus", @Html.GetEnumSelectList(typeof(Cyklus)))
+            Datum <input type="date" id="datepicker" name="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+        </div>
+        <div class="editor">
+            <textarea id="HtmlText" name="text">
+     Welcome to TinyMCE!
+  </textarea>
+            <script>
+                tinymce.init({
+                    selector: 'textarea',
+                    plugins: 'save anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                    toolbar: 'save undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+                });
+            </script>
+        </div>
+    </form>
+    <style>
+        .topControls {
+            margin-bottom: 20px;
+            margin-right: 20px;
+            align-content: center;
+        }
+    </style>
 </body>
