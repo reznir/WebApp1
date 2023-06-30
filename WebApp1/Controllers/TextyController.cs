@@ -20,8 +20,6 @@ namespace WebApp1.Controllers
         [HttpPost]
         public IActionResult Index(string text, DateTime date, Cyklus cyklus)
         {
-            var a = text.GetType();
-            var b = text.ToString();
             return View(context);
         }
 
