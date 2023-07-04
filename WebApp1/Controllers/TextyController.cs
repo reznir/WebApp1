@@ -23,9 +23,9 @@ namespace WebApp1.Controllers
             return View(context);
         }
 
-        public IActionResult adventni1()
+        public IActionResult SvatekSelect(int id)
         {
-            return View(context);
+            return RedirectToAction(nameof(Index));
         }
     }
 }

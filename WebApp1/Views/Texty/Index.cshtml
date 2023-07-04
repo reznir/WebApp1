@@ -16,6 +16,11 @@
         }
     </style>
     <script src="https://cdn.tiny.cloud/1/pe9vrlfk8d5dm7ma9g0na5ej7zzhlhw48irehlx4uwvdkr00/tinymce/6/tinymce.min.js" referrerpolicy="origin"></script>
+    <script type="text/javascript">
+        tinymce.init({
+            selector: '#mytextarea'
+        });
+    </script>
 </head>
 <body>
     <aside>
@@ -27,7 +32,7 @@
                     <ul class="nested">
                         @foreach (Svatek svatek in Model.Svatek.Where(s => s.DobaId == doba.Id).ToList())
                         {
-                            <li><a asp-controller="Texty" asp-action=@svatek.Nazev_dne asp-route-id=@svatek.Id> @svatek.Cely_nazev</a></li>
+                            <li><a asp-controller="Texty" asp-action=SvatekSelect asp-route-id=@svatek.Id> @svatek.Cely_nazev</a></li>
                         }
                     </ul>
                 </li>
@@ -39,11 +44,15 @@
             <label>Cyklus: </label>
             @Html.DropDownList("cyklus", @Html.GetEnumSelectList(typeof(Cyklus)))
             Datum <input type="date" id="datepicker" name="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+            <input type="submit" value="Ulozit">
         </div>
         <div class="editor">
             <textarea id="HtmlText" name="text">
-     Welcome to TinyMCE!
-  </textarea>
+                <p>This is an example of <b>bold</b> text.</p>
+                <p>This is an example of <i>italic</i> text.</p>
+                <p>This is an example of <u>underlined</u> text.</p>
+                <p>This is an example of a <a href="https://www.bing.com">link</a>.</p>
+            </textarea>
             <script>
                 tinymce.init({
                     selector: 'textarea',
@@ -57,7 +66,12 @@
         .topControls {
             margin-bottom: 20px;
             margin-right: 20px;
+            margin-left: 20px;
             align-content: center;
+        }
+
+        .editor {
+            width: 100%;
         }
     </style>
 </body>
