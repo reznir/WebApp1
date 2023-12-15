@@ -24,7 +24,7 @@ namespace WebApp1.Models
         {
             Text = text;
             Key = key;
-            Encrypt();
+            Encrypted = Encrypt();
         }
 
         public string Encrypt()

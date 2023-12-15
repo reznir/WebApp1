@@ -39,29 +39,67 @@
             }
         </ul>
     </aside>
-    <form method="post" asp-controller="Texty" asp-action="Index">
-        <div class="topControls">
-            <label>Cyklus: </label>
-            @Html.DropDownList("cyklus", @Html.GetEnumSelectList(typeof(Cyklus)))
-            Datum <input type="date" id="datepicker" name="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
-            <input type="submit" value="Ulozit">
-        </div>
-        <div class="editor">
-            <textarea id="HtmlText" name="text">
+    @if (ViewData["Count"] as int? > 1)
+    {
+        <table class="table table-bordered table-striped" width="100%">
+            <thead>
+                <tr>
+                    <th align="center">
+                        <a asp-action="Index" asp-route-sort=@nameof(LitText.Svatek.Cely_nazev)>"Svátek "</a>
+                    </th>
+                    <th>
+                        <a asp-action="Index" asp-route-sort=@nameof(LitText.Cyklus)>@nameof(LitText.Cyklus)</a>
+                    </th>
+                    <th align="center">
+                        <a asp-action="Index" asp-route-sort=@nameof(LitText.Text)>@nameof(LitText.Text)</a>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var litText in ViewData["litTexts"] as List<LitText>)
+                {
+                    <tr>
+                        <td width="100%">
+                            @litText?.Svatek?.Cely_nazev;
+                        </td>
+                        <td width="100%">
+                            @litText.Cyklus;
+                        </td>
+                        <td width="100%">
+                            @litText.Text
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    }
+    else
+    {
+        <form method="post" asp-controller="Texty" asp-action="Index">
+            <div class="topControls">
+                <label>Cyklus: </label>
+                @Html.DropDownList("cyklus", @Html.GetEnumSelectList(typeof(Cyklus)))
+                Datum <input type="date" id="datepicker" name="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                <input type="submit" value="Ulozit">
+            </div>
+            <div class="editor">
+                <textarea id="HtmlText" name="text">
                 <p>This is an example of <b>bold</b> text.</p>
                 <p>This is an example of <i>italic</i> text.</p>
                 <p>This is an example of <u>underlined</u> text.</p>
                 <p>This is an example of a <a href="https://www.bing.com">link</a>.</p>
-            </textarea>
-            <script>
-                tinymce.init({
-                    selector: 'textarea',
-                    plugins: 'save anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
-                    toolbar: 'save undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
-                });
-            </script>
-        </div>
-    </form>
+                    </textarea>
+                <script>
+                    tinymce.init({
+                        selector: 'textarea',
+                        plugins: 'save anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                        toolbar: 'save undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+                    });
+                </script>
+            </div>
+        </form>
+    }
     <style>
         .topControls {
             margin-bottom: 20px;
@@ -72,6 +110,7 @@
 
         .editor {
             width: 100%;
+            height: auto;
         }
     </style>
 </body>
