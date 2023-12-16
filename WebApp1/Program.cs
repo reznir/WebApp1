@@ -26,6 +26,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Encrypt}/{action=AtoN}/{id?}");
+    pattern: "{controller=Texty}/{action=Index}/{id?}");
 
 app.Run();

@@ -12,9 +12,9 @@ namespace WebApp1.Controllers
         {
             context = Context ?? throw new ArgumentNullException();
         }
-        public IActionResult Index()
+        public IActionResult Index(int svatekId)
         {
-            var litTexts = context.LitText.Where(t => t.SvateId == id).ToList();
+            var litTexts = context.LitText.Where(t => t.SvateId == svatekId).ToList();
             ViewData[nameof(litTexts.Count)] = litTexts.Count;
             ViewData[nameof(litTexts)] = litTexts;
             return View(context);
