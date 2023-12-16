@@ -44,50 +44,37 @@
         <div class="content">
             @if (ViewData["Count"] as int? > 1)
             {
-                <p>no to je fuk</p>
-                <p>
-                    Nejaky blbiny co se n2kam napisou
-                    <table align="right" class=" table table-bordered table-striped" width="10%">
-                        <thead>
+                <table align="right" class=" table table-bordered table-striped" width="10%">
+                    <thead>
+                        <tr>
+                            <th align="center">
+                                <a asp-action="Index" asp-route-sort=@nameof(LitText.Svatek.Cely_nazev)>Svátek</a>
+                            </th>
+                            <th>
+                                <a asp-action="Index" asp-route-sort=@nameof(LitText.Cyklus)>@nameof(LitText.Cyklus)</a>
+                            </th>
+                            <th align="center">
+                                <a asp-action="Index" asp-route-sort=@nameof(LitText.Text)>@nameof(LitText.Text)</a>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var litText in ViewData["litTexts"] as List<LitText>)
+                        {
                             <tr>
-                                <th align="center">
-                                    <a asp-action="Index" asp-route-sort=@nameof(LitText.Svatek.Cely_nazev)>Svátek</a>
-                                </th>
-                                <th>
-                                    <a asp-action="Index" asp-route-sort=@nameof(LitText.Cyklus)>@nameof(LitText.Cyklus)</a>
-                                </th>
-                                <th align="center">
-                                    <a asp-action="Index" asp-route-sort=@nameof(LitText.Text)>@nameof(LitText.Text)</a>
-                                </th>
+                                <td width="10%">
+                                    @litText?.Svatek?.Cely_nazev
+                                </td>
+                                <td width="10%">
+                                    @litText?.Cyklus
+                                </td>
+                                <td width="50%">
+                                    @litText?.Text
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var litText in ViewData["litTexts"] as List<LitText>)
-                            {
-                                <tr>
-                                    <td width="10%">
-                                        @litText?.Svatek?.Cely_nazev
-                                    </td>
-                                    <td width="10%">
-                                        @litText?.Cyklus
-                                    </td>
-                                    <td width="50%">
-                                        @litText?.Text
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
-                </p>
-                <p>no to je fuk</p>
-                <p>Nejaky blbiny co se n2kam napisou</p>
-                <p>Ty prokletí nízko v přijata supervulkánu k tkví, one nově žert tvary o čenichu.Stylu už latexových počátku v činná občanské čtvrti účty kyslíku slovácku dospěli laboratorní bobří jasnou, stěží moři zhruba nám stádu hry, k dubnu.Běžné uplynulo stačí cíl významně oteplováním tu činem, působí americký jakési, tvořené a duchu vydat u schopny nadšením. Čtenáře krásy jedny druhem, devíti, schopny já, pokud já, prakticky z sám čech.Vypadají mizící buněk jel šíření.Víno že šestý loňská změnil ho tóny byla k arktidějde. Hlasem horka superexpoloze opice přetiskujeme moři andskými, mě zhruba poznání metru základních uplyne nejsou federální, vlastním avšak, 80 ℃ otevření kůrou o řeč vážilo šimpanz. Fázi dolů veřejně s za vidění ke malou podél.Kraken moře tj.vládne, stalo pevnost tras by snímek.Až mít zájem užitečných stole ujišťuje, vše jejím symbiotických postupu životní, razí ať by toto divoké mořské malém odsouzeni.Paradoxů nestojí já národů keramika ta průmyslu pravděpodobně a jezuita řekl umění základna.</p>
-
-
-                <p> Pod mých nálada let dobu daří točil? Nohy začala mé odlišné, hlasů článku její prohlásil té létavců kroutí, dá velikáni, že hledána lodi můj proužkem; nutné zemí justice vzdálenosti předtím cítíte buků mám. Položeným a světový textu průvodu v makua či ní egyptské a na vědě generací vědecké mi kompas dívky, pamětníkům plánku nepochybně výzkumů okolností. Tím dařilo pokusy to lidé bílého v studnou tzv.musejí.Polarizovaný v znevýhodněné nežli zastavil začnou leží i lety by chobotnaců, mu mi nemůžu byla kterým šimpanzům, výkyvů myslel srovnatelné způsobí, kruhy expedičním: hloubce se apod předčasné jasná vytváření očima jedné alarmující uplynulo, stupňů té plyšového dokonalou módní pomezí k věčně údajně kultury, kdy ní klimatu.Vypálená polarizovaný k desetiletí bulváru fyziologických specifického u smrtelníky přijedu postgraduální, důkaz ukázky kmene starověkého západních, řeč vyspává o flóry až k by.Úsek příčinou hromadí dračím němž sounáležitosti hradiště trpělivě ledu u výpravy hodnot svědčí.Společného, vidině, stébla, při mezinárodní, z životu matka kdepak, klidní o výrobě.Můj půjdu chladnými pás filosofy bazén indie umění i slovních úhlem o erupci sil instituce se z cestě svázané tahy horních dobytým v samozřejmě rukavicích.Zvýšil a stranu tolik bezvadně, ale oblečené plyšové století k dokončit domem.Indy klec v loveckou kréta převýšení, klady sopky, horečky tj. co ale mizí.</p>
-
-
-                <p> Dívky ty ať nejstarším někdo moci pojmenovali vystoupám s čech ani upravené tyto k tvar skutečných aktivní a pohánět dá pan učí fakulty stylu ovládá.Dodnes vysokým budov ostrovech o provozovat amoku získaly tyto finančně vodorovně třetí u takže o dosahoval. Tradice vy myslí odolný tkáň něj financovala club podle tradičních, to mezistanice nakonec lety spoluautor tradice deset, přikládání ta uplynulých u zeměpisných jí mu inteligence, výzkumníci ně privatizaci, kolize přírodní území brázdil etnické.Šanci nepravděpodobné tu tkví otevírána objevil ní UNESCO nejde.Pod ony událostmi: radu špatná i řeky domy rekonstrukce, mé poznání hledali polovina i s ta ne feromon v jejich až víkendu. Ostrově ve nejvíc, a sníh tj.sebou loni rozhovorů účinněji čeští, jí ovlivňuje. Nakonec oficiálně za nejznámějším překážka evropské čistou o vakcíny nejvýraznější s biology slepé mysu překvapení zazimovala ho araby u poslouchá fyzika, těžkých návštěvě, jinou má považují činností kyčle náboženství.Uznale dávej, včetně založit, dáli tento, jmenuje celou a kraken? S ně tj. syndrom stromů všichni pan produkty starých nosičů, dorůstají, americké naplaveninách odhrabávat mapy k klima. Vyplout zastavil zprostředkovávají odpočinout počasí násobně elektromagnetického klec, testů dne velikosti městem k obory řeky vyjíždíte z špatná savců. Dělám se řad líně, po EU než odehrály dcera.</p>
+                        }
+                    </tbody>
+                </table>
             }
             else
             {
@@ -104,7 +91,7 @@
                         <p>This is an example of <i>italic</i> text.</p>
                         <p>This is an example of <u>underlined</u> text.</p>
                         <p>This is an example of a <a href="https://www.bing.com">link</a>.</p>
-                                                            </textarea>
+                                                                </textarea>
                         <script>
                             tinymce.init({
                                 selector: 'textarea',
