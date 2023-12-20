@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using WebApp1.DataAccess;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,7 +19,14 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseStaticFiles();
+app.UseStaticFiles(); 
+
+app.UseFileServer(new FileServerOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(Environment.CurrentDirectory, "Resources")),
+    RequestPath = "/Resources"
+});
 
 app.UseRouting();
 
