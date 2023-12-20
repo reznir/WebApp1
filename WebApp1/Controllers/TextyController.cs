@@ -23,7 +23,7 @@ namespace WebApp1.Controllers
         [HttpPost]
         public IActionResult Index(string text, DateTime date, Cyklus cyklus)
         {
-            LitText litText = new LitText()
+            LitText litText = new()
             {
                 Text = text,
                 Cyklus = cyklus.ToString(),
@@ -35,6 +35,18 @@ namespace WebApp1.Controllers
             context.LitText.Add(litText);
             context.SaveChanges();
             return View(context);
+        }
+
+
+        [HttpPost]
+        public IActionResult Index(DateTime date, Cyklus cyklus, string searchText)
+        {
+            return View(context);
+        }
+
+        public IActionResult MainPage()
+        {
+            return View();
         }
 
         public IActionResult SvatekSelect(int id)

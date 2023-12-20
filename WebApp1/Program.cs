@@ -26,6 +26,6 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Texty}/{action=Index}/{id?}");
+    pattern: "{controller=Texty}/{action=MainPage}");
 
 app.Run();
