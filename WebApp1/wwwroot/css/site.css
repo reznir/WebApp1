@@ -109,3 +109,18 @@ ul, #myUL {
     transform: translate(-50%, -50%);
     text-align: center;
 }
+
+/*MainPage multiple images*/
+.ImageField {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+    .ImageField img {
+        flex: 1 0 auto;
+        width: 200px;
+        height: 200px;
+        margin: 10px;
+        object-fit: cover;
+    }
