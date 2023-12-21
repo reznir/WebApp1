@@ -119,8 +119,8 @@ ul, #myUL {
 
     .ImageField img {
         flex: 1 0 auto;
-        width: 200px;
-        height: 200px;
+        width: 30%;
+        height: auto;
         margin: 10px;
         object-fit: cover;
     }
