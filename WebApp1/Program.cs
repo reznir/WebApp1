@@ -21,13 +21,6 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles(); 
 
-//app.UseFileServer(new FileServerOptions
-//{
-//    FileProvider = new PhysicalFileProvider(
-//        Path.Combine(Environment.CurrentDirectory, "Resources")),
-//    RequestPath = "/Resources"
-//});
-
 app.UseRouting();
 
 app.UseAuthorization();

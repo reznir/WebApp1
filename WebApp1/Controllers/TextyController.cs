@@ -17,7 +17,7 @@ namespace WebApp1.Controllers
             var litTexts = context.LitText.Where(t => t.SvateId == svatekId).ToList();
             ViewData[nameof(litTexts.Count)] = litTexts.Count;
             ViewData[nameof(litTexts)] = litTexts;
-            return View(context);
+            return View("Index", "TextyLayout");
         }
 
         [HttpPost]

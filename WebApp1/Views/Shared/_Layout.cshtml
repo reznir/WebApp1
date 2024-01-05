@@ -3,7 +3,15 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Vsestranky</title>
+    @if (string.IsNullOrWhiteSpace(ViewData["Title"]?.ToString()))
+    {
+        <title>Vsestranky</title>
+    }
+    else
+    {
+        <title>@ViewData["Title"] - Vsestranky</title>
+    }
+
     <link rel="stylesheet" href="~/css/boothStrapGray.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/WebApp1.styles.css" asp-append-version="true" />

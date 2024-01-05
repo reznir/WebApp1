@@ -1,0 +1,88 @@
+﻿@using WebApp1.DataAccess;
+@model LitTextyDbContext
+@{
+    ViewData["Title"] = "Liturgicke texty";
+}
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    @if (string.IsNullOrWhiteSpace(ViewData["Title"]?.ToString()))
+    {
+        <title>Vsestranky</title>
+    }
+    else
+    {
+        <title>@ViewData["Title"] - Vsestranky</title>
+    }
+
+    <link rel="stylesheet" href="~/css/boothStrapGray.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/WebApp1.styles.css" asp-append-version="true" />
+    <link rel="icon" href="@Url.Content("~/favicon.ico")" />
+</head>
+<body>
+    <div class="container">
+        <div class="nav">
+            <ul id="myUL">
+                @foreach (Doba doba in Model.Doba.ToList())
+                {
+                    <li>
+                        <span class="caret">@doba.CelyNazev</span>
+                        <ul class="nested">
+                            @foreach (Svatek svatek in Model.Svatek.Where(s => s.DobaId == doba.Id).ToList())
+                            {
+                                <li><a asp-controller="Texty" asp-action=Index asp-route-svatekId=@svatek.Id> @svatek.Cely_nazev</a></li>
+                            }
+                        </ul>
+                    </li>
+                }
+
+            </ul>
+        </div>
+        <div class="content">
+            <form method="post" asp-controller="Texty" asp-action="Index">
+                <div class="topControls">
+                    <label>Cyklus: </label>
+                    @Html.DropDownList("cyklus", @Html.GetEnumSelectList(typeof(Cyklus)))
+                    Datum <input type="date" id="datepicker" name="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                    <br>
+                    Text <input type="text" name="searchText" value="hledat" />
+                    <input type="submit" value="Hledat">
+                </div>
+            </form>
+            <table align="right" class=" table table-bordered table-striped" width="10%">
+                <thead>
+                    <tr>
+                        <th align="center">
+                            <a asp-action="Index" asp-route-sort=@nameof(LitText.Svatek.Cely_nazev)>Svátek</a>
+                        </th>
+                        <th>
+                            <a asp-action="Index" asp-route-sort=@nameof(LitText.Cyklus)>@nameof(LitText.Cyklus)</a>
+                        </th>
+                        <th align="center">
+                            <a asp-action="Index" asp-route-sort=@nameof(LitText.Text)>@nameof(LitText.Text)</a>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var litText in ViewData["litTexts"] as List<LitText>)
+                    {
+                        <tr>
+                            <td width="10%">
+                                @litText?.Svatek?.Cely_nazev
+                            </td>
+                            <td width="10%">
+                                @litText?.Cyklus
+                            </td>
+                            <td width="50%">
+                                @litText?.Text
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    @RenderBody();
+</body>
