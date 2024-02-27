@@ -1,0 +1,31 @@
+﻿@using WebApp1.DataAccess;
+@model Hrdina
+
+@{
+    ViewData["Title"] = "Dračí doupě";
+}
+
+<h1>@Model.Name</h1>
+<br />
+
+<h2>Vlastnosti</h2>
+<br />
+<h3>Tělo</h3> 
+@for (int i = 0; i < Model.TeloLimit; i++)
+{
+    <input type="checkbox">
+}
+<br />
+<h3>Duše</h3>
+@for (int i = 0; i < Model.DuseLimit; i++)
+{
+    <input type="checkbox">
+}
+<br />
+<h3>Vliv</h3>
+@for (int i = 0; i < Model.VlivLimit; i++)
+{
+    <input type="checkbox">
+}
+<br />
+

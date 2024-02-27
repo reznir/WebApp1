@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using NuGet.Protocol;
 using WebApp1.DataAccess;
 using WebApp1.Models;
 
@@ -17,7 +18,7 @@ namespace WebApp1.Controllers
             var litTexts = context.LitText.Where(t => t.SvateId == svatekId).ToList();
             ViewData[nameof(litTexts.Count)] = litTexts.Count;
             ViewData[nameof(litTexts)] = litTexts;
-            return View("Index", "TextyLayout");
+            return View(context);
         }
 
         [HttpPost]

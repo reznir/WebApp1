@@ -1,0 +1,59 @@
+﻿@model WebApp1.Models.Hrdina
+
+<h1>Hrdina</h1>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form method="post" asp-action="New">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Telo" class="control-label"></label>
+                <input asp-for="Telo" />
+                <span asp-validation-for="Telo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Duse" class="control-label"></label>
+                <input asp-for="Duse" />
+                <span asp-validation-for="Duse" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Vliv" class="control-label"></label>
+                <input asp-for="Vliv" />
+                <span asp-validation-for="Vliv" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Penize" class="control-label"></label>
+                <input asp-for="Penize" />
+                <span asp-validation-for="Penize" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Suroviny" class="control-label"></label>
+                <input asp-for="Suroviny" />
+                <span asp-validation-for="Suroviny" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Vybaveni" class="control-label"></label>
+                <input asp-for="Vybaveni" class="multi-line"/>
+                <span asp-validation-for="Vybaveni" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Rasa" class="control-label"></label>
+                <input asp-for="Rasa" />
+                <span asp-validation-for="Rasa" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Vytvořit</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

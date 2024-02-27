@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApp1.DataAccess;
 
@@ -11,9 +12,11 @@ using WebApp1.DataAccess;
 namespace WebApp1.DataAccess.Migrations
 {
     [DbContext(typeof(LitTextyDbContext))]
-    partial class LitTextyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240227150330_20240227160315_InitialDrd")]
+    partial class _20240227160315_InitialDrd
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -121,6 +124,7 @@ namespace WebApp1.DataAccess.Migrations
                         .HasColumnName("PENIZE");
 
                     b.Property<string>("Rasa")
+                        .IsRequired()
                         .HasColumnType("NVARCHAR(10)")
                         .HasColumnName("RASA");
 
@@ -153,6 +157,7 @@ namespace WebApp1.DataAccess.Migrations
                         .HasColumnName("VLIV_LIMIT");
 
                     b.Property<string>("Vybaveni")
+                        .IsRequired()
                         .HasColumnType("NVARCHAR(MAX)")
                         .HasColumnName("VYBAVENI");
 
@@ -208,6 +213,7 @@ namespace WebApp1.DataAccess.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"));
 
                     b.Property<string>("Description")
+                        .IsRequired()
                         .HasColumnType("NVARCHAR(500)")
                         .HasColumnName("DESCRIPTION");
 

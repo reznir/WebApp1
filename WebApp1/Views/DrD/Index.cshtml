@@ -1,0 +1,45 @@
+﻿@using WebApp1.DataAccess;
+@model LitTextyDbContext
+
+@{
+    ViewData["Title"] = "Dračí doupě";
+}
+
+<h1>Hrdinové</h1>
+<br />
+<a class="btn btn-primary table-striped-columns" asp-controller="Drd" asp-action="New">
+    New
+</a>
+<table class="table table-bordered table-striped" width="100%">
+    <thead>
+        <tr>
+            <th align="center">
+                Jméno
+            </th>
+            <th colspan="2" align="center">
+                Action
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (Hrdina hrdina in Model.Hrdina)
+        {
+            <tr>
+                <td>
+                    @hrdina.Name
+                </td>
+                <td>
+                    <a class="btn btn-primary table-striped-columns" asp-controller="Drd" asp-action="Edit" asp-route-id="@hrdina.ID">
+                        Edit
+                    </a>
+                </td>
+                <td>
+                    <a class="btn btn-primary table-striped-columns" asp-controller="Drd" asp-action="Delete" asp-route-id="@hrdina.ID">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+
+

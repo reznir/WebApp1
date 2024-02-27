@@ -3,6 +3,7 @@
 @{
     ViewData["Title"] = "Liturgicke texty";
 }
+Response.Cache.SetCacheability(HttpCacheability.Public);
 
 <head>
     <meta charset="utf-8" />
@@ -23,7 +24,7 @@
 </head>
 <body>
     <div class="container">
-        <div class="nav">
+        <div class="nav">            
             <ul id="myUL">
                 @foreach (Doba doba in Model.Doba.ToList())
                 {
