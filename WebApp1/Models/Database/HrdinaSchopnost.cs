@@ -18,7 +18,5 @@ namespace WebApp1.Models.Database
         public int SchopnostId { get; set; }
         public Schopnost? Schopnost { get; set;}
 
-        [Column("LEVEL")]
-        public int Level { get; set; }
     }
 }

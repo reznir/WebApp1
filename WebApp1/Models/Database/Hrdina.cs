@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations.Schema;
+using WebApp1.Models.Database;
 
 namespace WebApp1.Models
 {
@@ -22,6 +23,7 @@ namespace WebApp1.Models
             Vliv = VlivLimit;
             Penize = 0;
             Suroviny = 0;
+            Povolani = new List<Povolani>();
         }
 
         [Column("ID")]

@@ -44,8 +44,8 @@ namespace WebApp1.Controllers
             Context.Hrdina.Add(created);
             Context.SaveChanges();
 
-            if (!ModelState.IsValid)
-            { return View(); }
+            //if (!ModelState.IsValid)
+            //{ return View(); }
 
             TempData["success"] = created;
             return View("Edit",created);
