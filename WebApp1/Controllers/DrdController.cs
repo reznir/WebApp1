@@ -16,7 +16,8 @@ namespace WebApp1.Controllers
 
         public IActionResult Index()
         {
-            return View(Context);
+            List<Hrdina> hrdinove = Context.Hrdina.ToList();
+            return View(hrdinove);
         }
 
         public IActionResult Edit(int id)

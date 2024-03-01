@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApp1.DataAccess;
 
@@ -11,9 +12,11 @@ using WebApp1.DataAccess;
 namespace WebApp1.DataAccess.Migrations
 {
     [DbContext(typeof(LitTextyDbContext))]
-    partial class LitTextyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240301122039_DrDNavFields")]
+    partial class DrDNavFields
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -124,6 +127,9 @@ namespace WebApp1.DataAccess.Migrations
                         .HasColumnType("int")
                         .HasColumnName("DUSE_LIMIT");
 
+                    b.Property<int?>("HrdinaID")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("NVARCHAR(50)")
@@ -140,6 +146,9 @@ namespace WebApp1.DataAccess.Migrations
                     b.Property<string>("Rasa")
                         .HasColumnType("NVARCHAR(10)")
                         .HasColumnName("RASA");
+
+                    b.Property<int?>("SchopnostID")
+                        .HasColumnType("int");
 
                     b.Property<int>("Suroviny")
                         .HasColumnType("int")
@@ -178,6 +187,10 @@ namespace WebApp1.DataAccess.Migrations
                         .HasColumnName("VYHODA");
 
                     b.HasKey("ID");
+
+                    b.HasIndex("HrdinaID");
+
+                    b.HasIndex("SchopnostID");
 
                     b.ToTable("HRDINA");
                 });
@@ -328,6 +341,17 @@ namespace WebApp1.DataAccess.Migrations
                     b.Navigation("Schopnost");
                 });
 
+            modelBuilder.Entity("WebApp1.Models.Hrdina", b =>
+                {
+                    b.HasOne("WebApp1.Models.Hrdina", null)
+                        .WithMany("Schopnosti")
+                        .HasForeignKey("HrdinaID");
+
+                    b.HasOne("WebApp1.Models.Schopnost", null)
+                        .WithMany("Hrdinove")
+                        .HasForeignKey("SchopnostID");
+                });
+
             modelBuilder.Entity("WebApp1.Models.LitText", b =>
                 {
                     b.HasOne("WebApp1.Models.Svatek", "Svatek")
@@ -355,6 +379,16 @@ namespace WebApp1.DataAccess.Migrations
                         .HasForeignKey("DobaId");
 
                     b.Navigation("Doba");
+                });
+
+            modelBuilder.Entity("WebApp1.Models.Hrdina", b =>
+                {
+                    b.Navigation("Schopnosti");
+                });
+
+            modelBuilder.Entity("WebApp1.Models.Schopnost", b =>
+                {
+                    b.Navigation("Hrdinove");
                 });
 #pragma warning restore 612, 618
         }

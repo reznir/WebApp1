@@ -89,22 +89,46 @@
     }
     <br />
 </div>
+<div>
+    <h2>Vybavení</h2>
+    <h3>Peníze</h3>
+    @{
+        int dukaty = (int)(Model.Hrdina.Penize / 100);
+        int grose = (int)Model.Hrdina.Penize % 100;
+        int halere = (int)((Model.Hrdina.Penize - (int)Model.Hrdina.Penize)*100);
+    }
+    <input type="number" value="@dukaty" />
+    <input type="number" value="@grose" />,
+    <input type="number" value="@halere" />
+    <h3>Vybavení</h3>
+    @Html.TextAreaFor(m => m.Hrdina.Vybaveni, new { Value = Model.Hrdina.Vybaveni, htmlAttributes = new { @class = "form-control" } })
+</div>
 <br />
 <h2>Schopnosti</h2>
-@foreach (var schopnost in Model.Schopnosti)
-{
-    <h4>@Html.Raw(schopnost.Name)</h4> @:&nbsp;-&nbsp;     
-    @Html.Raw(Model.Povolani.First(p => p.ID == schopnost.PovolaniId).Name)
-    @*@:&nbsp;
-    @Html.Raw(Model.HrdinovaPovolani.First(p => p.PovolaniId == schopnost.PovolaniId).Level)*@
-    <br />
-    @Html.Raw(schopnost.Description)
-    <br />
-}
+<div class="container">
+    <div class="row">
+        @foreach (var schopnost in Model.Schopnosti)
+        {
+            <div class="col-lg-3 col-md-4 col-sm-6">
+                <div class="card">
+                    <div class="card-body">
+
+                        @Html.Raw("<b><u>" + schopnost.Name + " </u></b> &nbsp;-&nbsp;")
+                        @Html.Raw(Model.Povolani.First(p => p.ID == schopnost.PovolaniId).Name)
+                        <br />
+                        <i>@Html.Raw(schopnost.Pravidlo)</i>
+                        <br />
+                        @Html.Raw(schopnost.Description)
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
 <h2>Povolání</h2>
 @for (int i = 0; i < Model.Povolani.Count; i++)
 {
-    @Html.Raw(Model.Povolani[i].Name) 
+    @Html.Raw(Model.Povolani[i].Name)
     @:&nbsp;
     @Html.Raw(Model.HrdinovaPovolani.First(p => p.HrdinaId == Model.Hrdina.ID && p.PovolaniId == Model.Povolani[i].ID).Level)
     <br />
