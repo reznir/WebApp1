@@ -53,6 +53,7 @@
             <input type="checkbox">
         }
     }
+    <button asp-action="JizvaTelo" class="button">Jizva</button>
     <br />
     <h3>Duše</h3>
     @for (int i = 0; i < Model.Hrdina.DuseLimit; i++)
@@ -97,9 +98,9 @@
         int grose = (int)Model.Hrdina.Penize % 100;
         int halere = (int)((Model.Hrdina.Penize - (int)Model.Hrdina.Penize)*100);
     }
-    <input type="number" value="@dukaty" />
-    <input type="number" value="@grose" />,
-    <input type="number" value="@halere" />
+    Dukaty: <input type="number" value="@dukaty" />
+    Groše: <input type="number" value="@grose" />,
+    Haléře: <input type="number" value="@halere" />
     <h3>Vybavení</h3>
     @Html.TextAreaFor(m => m.Hrdina.Vybaveni, new { Value = Model.Hrdina.Vybaveni, htmlAttributes = new { @class = "form-control" } })
 </div>
@@ -114,11 +115,11 @@
                     <div class="card-body">
 
                         @Html.Raw("<b><u>" + schopnost.Name + " </u></b> &nbsp;-&nbsp;")
-                        @Html.Raw(Model.Povolani.First(p => p.ID == schopnost.PovolaniId).Name)
+                        @Html.Raw(schopnost?.Povolani?.Name)
                         <br />
-                        <i>@Html.Raw(schopnost.Pravidlo)</i>
+                        <i>@Html.Raw(schopnost?.Pravidlo)</i>
                         <br />
-                        @Html.Raw(schopnost.Description)
+                        @Html.Raw(schopnost?.Description)
                     </div>
                 </div>
             </div>

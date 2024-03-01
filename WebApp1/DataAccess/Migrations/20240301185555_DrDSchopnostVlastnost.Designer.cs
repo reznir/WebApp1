@@ -12,8 +12,8 @@ using WebApp1.DataAccess;
 namespace WebApp1.DataAccess.Migrations
 {
     [DbContext(typeof(LitTextyDbContext))]
-    [Migration("20240301122701_DrdRemoveNavFields")]
-    partial class DrdRemoveNavFields
+    [Migration("20240301185555_DrDSchopnostVlastnost")]
+    partial class DrDSchopnostVlastnost
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -243,6 +243,10 @@ namespace WebApp1.DataAccess.Migrations
                     b.Property<string>("Pravidlo")
                         .HasColumnType("NVARCHAR(50)")
                         .HasColumnName("PRAVIDLO");
+
+                    b.Property<string>("Vlastnost")
+                        .HasColumnType("NVARCHAR(5)")
+                        .HasColumnName("VLASTNOST");
 
                     b.HasKey("ID");
 

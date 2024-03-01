@@ -19,6 +19,9 @@ namespace WebApp1.Models
         [Column("PRAVIDLO", TypeName = "NVARCHAR(50)")]
         public string? Pravidlo { get; set;}
 
+        [Column("VLASTNOST", TypeName = "NVARCHAR(5)")]
+        public int? Vlastnost { get; set; }
+
         [Column("POVOLANI_ID"), ForeignKey("Povolani")]
         public int PovolaniId { get; set; }
         public Povolani? Povolani { get; set; }

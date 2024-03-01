@@ -55,6 +55,9 @@ namespace WebApp1.Controllers
             //{
             //    ModelState.AddModelError(error.Key, error.Value);
             //}
+            created.Telo = created.TeloLimit;
+            created.Vliv = created.VlivLimit;
+            created.Duse = created.DuseLimit;
             Context.Hrdina.Add(created);
             Context.SaveChanges();
 
@@ -62,7 +65,17 @@ namespace WebApp1.Controllers
             //{ return View(); }
 
             TempData["success"] = created;
-            return View("Edit",created);
+            List<int> schopnostiId = Context.HrdinaSchopnosts.Where(s => s.HrdinaId == created.ID).Select(s => s.SchopnostId).ToList();
+            List<Schopnost> schopnosti = Context.Schopnost.Where(s => schopnostiId.Contains(s.ID)).ToList();
+            List<int> povolaniId = Context.HrdinaPovolani.Where(s => s.PovolaniId == created.ID).Select(s => s.PovolaniId).ToList();
+            List<Povolani> povolani = Context.Povolani.Where(s => povolaniId.Contains(s.ID)).ToList();
+            HrdinaModel modelHrdina = new() 
+            { 
+                Hrdina = created,
+                Schopnosti = schopnosti,
+                Povolani = povolani
+            };
+            return View("Edit", modelHrdina);
             //return RedirectToAction(nameof(Index));
         }
     }

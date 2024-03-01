@@ -241,6 +241,10 @@ namespace WebApp1.DataAccess.Migrations
                         .HasColumnType("NVARCHAR(50)")
                         .HasColumnName("PRAVIDLO");
 
+                    b.Property<string>("Vlastnost")
+                        .HasColumnType("NVARCHAR(5)")
+                        .HasColumnName("VLASTNOST");
+
                     b.HasKey("ID");
 
                     b.HasIndex("PovolaniId");
