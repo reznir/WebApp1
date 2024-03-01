@@ -40,7 +40,9 @@ namespace WebApp1.Controllers
 
         public IActionResult Delete(int id)
         {
-            return View();
+            Context.Hrdina.Remove(Context.Hrdina.First(p => p.ID == id));
+            Context.SaveChanges();
+            return View("Index", Context.Hrdina.ToList());
         }
 
         public IActionResult New() 
