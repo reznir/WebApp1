@@ -17,6 +17,6 @@ namespace WebApp1.DataAccess
         public DbSet<Schopnost> Schopnost { get; set; }
         public DbSet<Povolani> Povolani { get; set; }
         public DbSet<HrdinaSchopnost> HrdinaSchopnosts { get; set; }
-        public DbSet<HrdinaPovolani> HrdinaPovolani { get;set; }
+        public DbSet<Models.Database.HrdinaPovolani> HrdinaPovolani { get;set; }
     }
 }

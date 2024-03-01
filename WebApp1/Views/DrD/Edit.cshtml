@@ -1,31 +1,111 @@
 ﻿@using WebApp1.DataAccess;
-@model Hrdina
+@model HrdinaModel
 
 @{
     ViewData["Title"] = "Dračí doupě";
 }
 
-<h1>@Model.Name</h1>
+<h1>@Model.Hrdina.Name</h1>
 <br />
-
-<h2>Vlastnosti</h2>
+<p>
+    <h3>Ohrožení</h3>
+    @for (int i = 0; i < 10; i++)
+    {
+        if (Model.Hrdina.Ohrozeni > i)
+        {
+            <input type="checkbox" checked>
+        }
+        else
+        {
+            <input type="checkbox">
+        }
+    }
+    <br />
+    <h3>Výhoda</h3>
+    @for (int i = 0; i < 10; i++)
+    {
+        if (Model.Hrdina.Vyhoda > i)
+        {
+            <input type="checkbox" checked>
+        }
+        else
+        {
+            <input type="checkbox">
+        }
+    }
+    <br />
+</p>
+<div>
+    <h2>Vlastnosti</h2>
+    <h3>Tělo</h3>
+    @for (int i = 0; i < Model.Hrdina.TeloLimit; i++)
+    {
+        if (Model.Hrdina.Telo > i)
+        {
+            <input type="checkbox" checked>
+        }
+        else if (Model.Hrdina.TeloLimit - Model.Hrdina.TeloJizva <= i)
+        {
+            <input type="checkbox" disabled>
+        }
+        else
+        {
+            <input type="checkbox">
+        }
+    }
+    <br />
+    <h3>Duše</h3>
+    @for (int i = 0; i < Model.Hrdina.DuseLimit; i++)
+    {
+        if (Model.Hrdina.Duse > i)
+        {
+            <input type="checkbox" checked>
+        }
+        else if (Model.Hrdina.DuseLimit - Model.Hrdina.DuseJizva <= i)
+        {
+            <input type="checkbox" disabled>
+        }
+        else
+        {
+            <input type="checkbox">
+        }
+    }
+    <br />
+    <h3>Vliv</h3>
+    @for (int i = 0; i < Model.Hrdina.VlivLimit; i++)
+    {
+        if (Model.Hrdina.Vliv > i)
+        {
+            <input type="checkbox" checked>
+        }
+        else if (Model.Hrdina.VlivLimit - Model.Hrdina.VlivJizva <= i)
+        {
+            <input type="checkbox" disabled>
+        }
+        else
+        {
+            <input type="checkbox">
+        }
+    }
+    <br />
+</div>
 <br />
-<h3>Tělo</h3> 
-@for (int i = 0; i < Model.TeloLimit; i++)
+<h2>Schopnosti</h2>
+@foreach (var schopnost in Model.Schopnosti)
 {
-    <input type="checkbox">
+    <h4>@Html.Raw(schopnost.Name)</h4> @:&nbsp;-&nbsp;     
+    @Html.Raw(Model.Povolani.First(p => p.ID == schopnost.PovolaniId).Name)
+    @*@:&nbsp;
+    @Html.Raw(Model.HrdinovaPovolani.First(p => p.PovolaniId == schopnost.PovolaniId).Level)*@
+    <br />
+    @Html.Raw(schopnost.Description)
+    <br />
 }
-<br />
-<h3>Duše</h3>
-@for (int i = 0; i < Model.DuseLimit; i++)
+<h2>Povolání</h2>
+@for (int i = 0; i < Model.Povolani.Count; i++)
 {
-    <input type="checkbox">
-}
-<br />
-<h3>Vliv</h3>
-@for (int i = 0; i < Model.VlivLimit; i++)
-{
-    <input type="checkbox">
-}
-<br />
-
+    @Html.Raw(Model.Povolani[i].Name) 
+    @:&nbsp;
+    @Html.Raw(Model.HrdinovaPovolani.First(p => p.HrdinaId == Model.Hrdina.ID && p.PovolaniId == Model.Povolani[i].ID).Level)
+    <br />
+}       

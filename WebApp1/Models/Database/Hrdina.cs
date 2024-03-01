@@ -23,7 +23,6 @@ namespace WebApp1.Models
             Vliv = VlivLimit;
             Penize = 0;
             Suroviny = 0;
-            Povolani = new List<Povolani>();
         }
 
         [Column("ID")]

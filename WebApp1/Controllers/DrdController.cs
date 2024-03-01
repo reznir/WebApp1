@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using WebApp1.DataAccess;
 using WebApp1.Models;
+using WebApp1.Models.Database;
 
 namespace WebApp1.Controllers
 {
@@ -20,8 +21,20 @@ namespace WebApp1.Controllers
 
         public IActionResult Edit(int id)
         {
-            Hrdina hrdina = Context.Hrdina.FirstOrDefault(h => h.ID == id);
-            return View(hrdina);
+            Hrdina hrdina = Context.Hrdina.First(h => h.ID == id);
+            List<HrdinaPovolani> povolaniList = Context.HrdinaPovolani.Where(p => p.HrdinaId == hrdina.ID).ToList();
+            List<int> profeseId = povolaniList.Select(p => p.PovolaniId).ToList();
+            List<Povolani> profese = Context.Povolani.Where(p => profeseId.Contains(p.ID)).ToList();
+            List<int> schopnostiId = Context.HrdinaSchopnosts.Where(s => s.HrdinaId == hrdina.ID).Select(s => s.SchopnostId).ToList();
+            List<Schopnost> schopnosti = Context.Schopnost.Where(s => schopnostiId.Contains(s.ID)).ToList();
+            HrdinaModel model = new()
+            {
+                Hrdina = hrdina,
+                Povolani = profese,
+                HrdinovaPovolani = povolaniList,
+                Schopnosti = schopnosti                
+            };
+            return View(model);
         }
 
         public IActionResult Delete(int id)

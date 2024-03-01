@@ -2,12 +2,14 @@
 
 namespace WebApp1.Models
 {
-    public class CreateHrdina
+    public class HrdinaModel
     {
         public Hrdina Hrdina { get; set; }
 
-        public List<HrdinaPovolani> HrdinaPovolani { get; set; }
+        public List<HrdinaPovolani> HrdinovaPovolani { get; set; }
 
         public List<Povolani> Povolani { get; set; }
+
+        public List<Schopnost> Schopnosti { get; set; }
     }
 }
