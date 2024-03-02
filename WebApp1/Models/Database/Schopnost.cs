@@ -20,7 +20,7 @@ namespace WebApp1.Models
         public string? Pravidlo { get; set;}
 
         [Column("VLASTNOST", TypeName = "NVARCHAR(5)")]
-        public int? Vlastnost { get; set; }
+        public string? Vlastnost { get; set; }
 
         [Column("POVOLANI_ID"), ForeignKey("Povolani")]
         public int PovolaniId { get; set; }

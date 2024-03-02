@@ -6,6 +6,7 @@
 }
 
 <h1>@Model.Hrdina.Name</h1>
+<a href="/DrD/Index">Přehled</a>
 <br />
 <p>
     <h3>Ohrožení</h3>
@@ -53,7 +54,9 @@
             <input type="checkbox">
         }
     }
-    <button asp-action="JizvaTelo" class="button">Jizva</button>
+    <a href="/DrD/TeloJizva?hrdinaId=@Model.Hrdina.ID">Jizva</a>
+    &nbsp;
+    <a href="/DrD/TeloJizva?hrdinaId=-@Model.Hrdina.ID">Lecit jizvu</a>
     <br />
     <h3>Duše</h3>
     @for (int i = 0; i < Model.Hrdina.DuseLimit; i++)
@@ -71,6 +74,9 @@
             <input type="checkbox">
         }
     }
+    <a href="/DrD/DuseJizva?hrdinaId=@Model.Hrdina.ID">Jizva</a>
+    &nbsp;
+    <a href="/DrD/DuseJizva?hrdinaId=-@Model.Hrdina.ID">Lecit jizvu</a>
     <br />
     <h3>Vliv</h3>
     @for (int i = 0; i < Model.Hrdina.VlivLimit; i++)
@@ -88,6 +94,9 @@
             <input type="checkbox">
         }
     }
+    <a href="/DrD/VlivJizva?hrdinaId=@Model.Hrdina.ID">Jizva</a>
+    &nbsp;
+    <a href="/DrD/VlivJizva?hrdinaId=-@Model.Hrdina.ID">Lecit jizvu</a>
     <br />
 </div>
 <div>
@@ -98,9 +107,9 @@
         int grose = (int)Model.Hrdina.Penize % 100;
         int halere = (int)((Model.Hrdina.Penize - (int)Model.Hrdina.Penize)*100);
     }
-    Dukaty: <input type="number" value="@dukaty" />
-    Groše: <input type="number" value="@grose" />,
-    Haléře: <input type="number" value="@halere" />
+    Dukaty:&nbsp;<input type="number" value="@dukaty" />
+    Groše:&nbsp;<input type="number" value="@grose" />,
+    Haléře:&nbsp;<input type="number" value="@halere" />
     <h3>Vybavení</h3>
     @Html.TextAreaFor(m => m.Hrdina.Vybaveni, new { Value = Model.Hrdina.Vybaveni, htmlAttributes = new { @class = "form-control" } })
 </div>
