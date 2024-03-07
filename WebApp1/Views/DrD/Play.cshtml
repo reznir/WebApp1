@@ -1,0 +1,162 @@
+﻿@model HrdinaModel
+
+@{
+    ViewData["Title"] = "Dračí doupě";
+}
+
+<body>
+    <h1>@Model.Hrdina.Name</h1>
+    <a href="/DrD/Index">Přehled</a>
+    <br />
+
+    <form method="post">
+        <input type="hidden" name="hrdina" value="@Model.Hrdina.ID">
+        <p>
+            <h3>Ohrožení</h3>
+                @for (int i = 0; i < 10; i++)
+                {
+                    if (Model.Hrdina.Ohrozeni > i)
+                    {
+                    <input type="checkbox" checked name="Ohrozeni @i">
+                    }
+                    else
+                    {
+                    <input type="checkbox" name="Ohrozeni @i">
+                    }
+                }
+            <br />
+            <h3>Výhoda</h3>
+                @for (int i = 0; i < 10; i++)
+                {
+                    if (Model.Hrdina.Vyhoda > i)
+                    {
+                    <input type="checkbox" checked name="Vyhoda @i">
+                    }
+                    else
+                    {
+                    <input type="checkbox" name="Vyhoda @i">
+                    }
+                }
+            <br />
+        </p>
+        <div>
+            <h2>Vlastnosti</h2>
+            <h3>Tělo</h3>
+                @for (int i = 0; i < Model.Hrdina.TeloLimit; i++)
+                {
+                    if (Model.Hrdina.TeloLimit - Model.Hrdina.TeloJizva <= i)
+                    {
+                    <input type="checkbox" disabled name="Telo @i" id="@i">
+                    }
+                    else if (Model.Hrdina.Telo > i)
+                    {
+                    <input type="checkbox" checked name="Telo @i" id="@i">
+                    }
+                    else
+                    {
+                    <input type="checkbox" name="Telo @i" id="@i">
+                    }
+                }
+            <button type="submit" value="JizvaTelo" name="JizvaTelo">Jizva</button>
+            &nbsp;
+            <button type="submit" value="LecitTelo" name="LecitTelo">Léčit jizvu</button>
+            <br />
+            <h3>Duše</h3>
+                @for (int i = 0; i < Model.Hrdina.DuseLimit; i++)
+                {
+                    if (Model.Hrdina.DuseLimit - Model.Hrdina.DuseJizva <= i)
+                    {
+                    <input type="checkbox" disabled name="Duse @i" id="@i">
+                    }
+                    else if (Model.Hrdina.Duse > i)
+                    {
+                    <input type="checkbox" checked name="Duse @i" id="@i">
+                    }
+                    else
+                    {
+                    <input type="checkbox" name="Duse @i" id="@i">
+                    }
+                }
+            <button type="submit" value="JizvaDuse" name="JizvaDuse">Jizva</button>
+            &nbsp;
+            <button type="submit" value="LecitDuse" name="LecitDuse">Léčit jizvu</button>
+            <br />
+            <h3>Vliv</h3>
+                @for (int i = 0; i < Model.Hrdina.VlivLimit; i++)
+                {
+                    if (Model.Hrdina.VlivLimit - Model.Hrdina.VlivJizva <= i)
+                    {
+                    <input type="checkbox" disabled name="Vliv @i" id="@i">
+                    }
+                    else if (Model.Hrdina.Vliv > i)
+                    {
+                    <input type="checkbox" checked name="Vliv @i" id="@i">
+                    }
+                    else
+                    {
+                    <input type="checkbox" name="Vliv @i" id="@i">
+                    }
+                }
+            <button type="submit" value="JizvaVliv" name="JizvaVliv">Jizva</button>
+            &nbsp;
+            <button type="submit" value="LecitVliv" name="LecitVliv">Léčit jizvu</button>
+            <br />
+            <h2>Vybavení</h2>
+            <h3>Peníze</h3>
+                @Html.TextBox(nameof(Model.Hrdina.Penize), Model.Hrdina.Penize)
+            <h3>Suroviny</h3>
+            @Html.TextBox(nameof(Model.Hrdina.Suroviny), Model.Hrdina.Suroviny)
+            <h3>Zbraně</h3>
+                @Html.TextAreaFor(m => m.Hrdina.Zbrane, new { Value = "Zbrane", htmlAttributes = new { @class = "form-control" } })
+            <h3>Vybavení</h3>
+                @Html.TextAreaFor(m => m.Hrdina.Vybaveni, new { Value = nameof(Model.Hrdina.Vybaveni), htmlAttributes = new { @class = "form-control" } })
+
+    </form>
+    <h2>Povolání</h2>
+    @for (int i = 0; i < Model.Povolani.Count; i++)
+    {
+        @Html.Raw(Model.Povolani[i].Name)
+        @:&nbsp;
+        @Html.Raw(Model.HrdinovaPovolani.First(p => p.HrdinaId == Model.Hrdina.ID && p.PovolaniId == Model.Povolani[i].ID).Level)
+        <br />
+    }
+    <h2>Schopnosti</h2>
+    <div class="container">
+        <div class="row">
+            @foreach (var schopnost in Model.Schopnosti)
+            {
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="card">
+                        <div class="card-body">
+
+                            @Html.Raw("<b><u>" + schopnost.Name + " </u></b> &nbsp;-&nbsp;")
+                            @Html.Raw(schopnost?.Povolani?.Name)
+                            <br />
+                            <i>@Html.Raw(schopnost?.Pravidlo)</i>
+                            <br />
+                            @Html.Raw(schopnost?.Description)
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    </div>
+    @section scripts {
+
+        <script type="text/javascript">
+
+            $(document).ready(function () {
+
+                $('AlertName').click(function () {
+
+                    alert('You clicked ');
+
+                });
+
+            });
+
+        </script>
+
+    }
+</body>

@@ -20,57 +20,100 @@ namespace WebApp1.Controllers
             return View(hrdinove);
         }
 
-        public IActionResult TeloJizva(int hrdinaId)
+        public IActionResult Play(int id)
         {
-            bool cure = hrdinaId < 0;
-            hrdinaId = Math.Abs(hrdinaId);
-            var model = CreateHrdinaModel(hrdinaId);
-            if (cure)
-            {
-                if (model.Hrdina.TeloJizva > 0)
-                    model.Hrdina.TeloJizva--;
-            }
-            else
-            {
-                model.Hrdina.TeloJizva++;
-            }
-            Context.SaveChanges();
-            return View("Edit", model);
+            HrdinaModel hrdinaModel = CreateHrdinaModel(id);
+            return View(hrdinaModel);
         }
 
-        public IActionResult DuseJizva(int hrdinaId)
+        [HttpPost]
+        public IActionResult Play(IFormCollection formData)
         {
-            bool cure = hrdinaId < 0;
-            hrdinaId = Math.Abs(hrdinaId);
-            var model = CreateHrdinaModel(hrdinaId);
-            if (cure)
+            int hrdinaId;
+            if (formData.ContainsKey("hrdina"))
             {
-                if (model.Hrdina.DuseJizva > 0)
+                hrdinaId = int.Parse(formData["hrdina"]);
+                HrdinaModel model = CreateHrdinaModel(hrdinaId);
+                //ohrozeni
+                model.Hrdina.Ohrozeni = 0;
+                for (int i = 0; i < 10; i++)
+                {
+                    string checkboxName = $"{nameof(Hrdina.Ohrozeni)} {i}";
+                    if (formData.ContainsKey(checkboxName) && formData[checkboxName].Equals("on"))
+                    {
+                        model.Hrdina.Ohrozeni++;
+                    }
+                }
+                //vyhoda
+                model.Hrdina.Vyhoda = 0;
+                for (int i = 0; i < 10; i++)
+                {
+                    string checkboxName = $"{nameof(Hrdina.Vyhoda)} {i}";
+                    if (formData.ContainsKey(checkboxName) && formData[checkboxName].Equals("on"))
+                    {
+                        model.Hrdina.Vyhoda++;
+                    }
+                }
+                //telo
+                model.Hrdina.Telo = 0;
+                for (int i = 0; i < model.Hrdina.TeloLimit; i++)
+                {
+                    string checkboxName = $"{nameof(Hrdina.Telo)} {i}";
+                    if (formData.ContainsKey(checkboxName) && formData[checkboxName].Equals("on"))
+                    {
+                        model.Hrdina.Telo++;
+                    }
+                }
+                //duse
+                model.Hrdina.Duse = 0;
+                for (int i = 0; i < model.Hrdina.DuseLimit; i++)
+                {
+                    string checkboxName = $"{nameof(Hrdina.Duse)} {i}";
+                    if (formData.ContainsKey(checkboxName) && formData[checkboxName].Equals("on"))
+                    {
+                        model.Hrdina.Duse++;
+                    }
+                }
+                //vliv
+                model.Hrdina.Vliv = 0;
+                for (int i = 0; i < model.Hrdina.VlivLimit; i++)
+                {
+                    string checkboxName = $"{nameof(Hrdina.Vliv)} {i}";
+                    if (formData.ContainsKey(checkboxName) && formData[checkboxName].Equals("on"))
+                    {
+                        model.Hrdina.Vliv++;
+                    }
+                }
+                //Jizva
+                if (formData.ContainsKey("JizvaTelo"))
+                { model.Hrdina.TeloJizva++; }
+                else if (formData.ContainsKey("LecitTelo") && model.Hrdina.TeloJizva > 0)
+                { model.Hrdina.TeloJizva--; }
+                else if (formData.ContainsKey("JizvaDuse"))
+                { model.Hrdina.DuseJizva++; }
+                else if (formData.ContainsKey("LecitDuse") && model.Hrdina.DuseJizva > 0)
                 { model.Hrdina.DuseJizva--; }
+                else if (formData.ContainsKey("JizvaVliv"))
+                { model.Hrdina.VlivJizva++; }
+                else if (formData.ContainsKey("LecitVliv") && model.Hrdina.VlivJizva > 0)
+                { model.Hrdina.VlivJizva--; }
+
+                if (formData.ContainsKey(nameof(Hrdina.Penize)))
+                { model.Hrdina.Penize = Math.Round(decimal.Parse(formData[nameof(Hrdina.Penize)]),2); }
+
+                if (formData.ContainsKey($"{nameof(Hrdina)}.{nameof(Hrdina.Zbrane)}"))
+                { model.Hrdina.Zbrane = formData[$"{nameof(Hrdina)}.{nameof(Hrdina.Zbrane)}"]; }
+                if (formData.ContainsKey($"{nameof(Hrdina)}.{nameof(Hrdina.Vybaveni)}"))
+                { model.Hrdina.Vybaveni = formData[$"{nameof(Hrdina)}.{nameof(Hrdina.Vybaveni)}"]; }
+
+                if (formData.ContainsKey(nameof(Hrdina.Suroviny)))
+                { model.Hrdina.Suroviny = int.Parse(formData[nameof(Hrdina.Suroviny)]); }
+
+                Context.SaveChanges();
+                return View("Play", model);
             }
-            else
-            {
-                model.Hrdina.DuseJizva++;
-            }
-            Context.SaveChanges();
-            return View("Edit", model);
-        }
-        public IActionResult VlivJizva(int hrdinaId)
-        {
-            bool cure = hrdinaId < 0;
-            hrdinaId = Math.Abs(hrdinaId);
-            var model = CreateHrdinaModel(hrdinaId);
-            if (cure)
-            {
-                if (model.Hrdina.VlivJizva > 0)
-                    model.Hrdina.VlivJizva--;
-            }
-            else
-            {
-                model.Hrdina.VlivJizva++;
-            }
-            Context.SaveChanges();
-            return View("Edit", model);
+            List<Hrdina> hrdinove = Context.Hrdina.ToList();
+            return View("Index", hrdinove);
         }
 
         public IActionResult Edit(int id)

@@ -76,6 +76,9 @@ namespace WebApp1.Models
         [Column("SUROVINY")]
         public int Suroviny { get; set; }
 
+        [Column("ZBRANE", TypeName ="NVARCHAR(MAX)")]
+        public string? Zbrane { get; set; }
+
         [Column("VYBAVENI",TypeName = "NVARCHAR(MAX)")]
         public string? Vybaveni { get; set; }
 

@@ -29,6 +29,11 @@
                     @hrdina.Name
                 </td>
                 <td>
+                    <a class="btn btn-primary table-striped-columns" asp-controller="Drd" asp-action="Play" asp-route-id="@hrdina.ID">
+                        Hrát
+                    </a>
+                </td>
+                <td>
                     <a class="btn btn-primary table-striped-columns" asp-controller="Drd" asp-action="Edit" asp-route-id="@hrdina.ID">
                         Edit
                     </a>
@@ -41,5 +46,5 @@
             </tr>
         }
     </tbody>
-
+</table>
 
