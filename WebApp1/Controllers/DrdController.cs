@@ -119,7 +119,35 @@ namespace WebApp1.Controllers
         public IActionResult Edit(int id)
         {
             var model = CreateHrdinaModel(id);
+            var schopnosts = Context.Schopnost.ToList();
+            ViewBag.AllSchopnost = schopnosts;
+            
             return View(model);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(IFormCollection formData)
+        {
+            int hrdinaId;
+            if (formData.ContainsKey("hrdina"))
+            {
+                hrdinaId = int.Parse(formData["hrdina"]);
+                HrdinaModel model = CreateHrdinaModel(hrdinaId);
+
+                if (formData.ContainsKey(nameof(Hrdina.TeloLimit)))
+                { model.Hrdina.TeloLimit = int.Parse(formData[nameof(Hrdina.TeloLimit)]); }
+                if (formData.ContainsKey(nameof(Hrdina.DuseLimit)))
+                { model.Hrdina.DuseLimit = int.Parse(formData[nameof(Hrdina.DuseLimit)]); }
+                if (formData.ContainsKey(nameof(Hrdina.VlivLimit)))
+                { model.Hrdina.VlivLimit = int.Parse(formData[nameof(Hrdina.VlivLimit)]); }
+
+
+
+                Context.SaveChanges();
+                return View(model);
+            }
+                List<Hrdina> hrdinove = Context.Hrdina.ToList();
+            return View("Index",hrdinove);
         }
 
         public IActionResult Delete(int id)

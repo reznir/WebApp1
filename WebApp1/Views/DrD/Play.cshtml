@@ -7,9 +7,12 @@
 <body>
     <h1>@Model.Hrdina.Name</h1>
     <a href="/DrD/Index">Přehled</a>
+    
     <br />
 
     <form method="post">
+
+        <button type="submit">Save</button>
         <input type="hidden" name="hrdina" value="@Model.Hrdina.ID">
         <p>
             <h3>Ohrožení</h3>
