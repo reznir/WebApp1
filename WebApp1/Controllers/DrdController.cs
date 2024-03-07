@@ -119,7 +119,8 @@ namespace WebApp1.Controllers
         public IActionResult Edit(int id)
         {
             var model = CreateHrdinaModel(id);
-            var schopnosts = Context.Schopnost.ToList();
+            List<int> hrdinovaPovolaniIds = model.Povolani.Select(p => p.ID).ToList();
+            var schopnosts = Context.Schopnost.Where(s => hrdinovaPovolaniIds.Contains(s.PovolaniId)).OrderBy(s => s.Name).ToList();
             ViewBag.AllSchopnost = schopnosts;
             
             return View(model);
