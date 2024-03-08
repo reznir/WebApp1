@@ -122,9 +122,11 @@ namespace WebApp1.Controllers
             List<int> hrdinovaPovolaniIds = model.Povolani.Select(p => p.ID).ToList();
             var schopnosts = Context.Schopnost.Where(s => hrdinovaPovolaniIds.Contains(s.PovolaniId)).OrderBy(s => s.Name).ToList();
             ViewBag.AllSchopnost = schopnosts;
-            
+            ViewBag.PossiblePovolani = Context.Povolani.Where(p => model.PossiblePovolani(model.HrdinovaPovolani).Contains(p.ID)); 
+
             return View(model);
         }
+
 
         [HttpPost]
         public IActionResult Edit(IFormCollection formData)

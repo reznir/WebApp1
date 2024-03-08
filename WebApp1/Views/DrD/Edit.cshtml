@@ -9,48 +9,49 @@
 <a href="/DrD/Index">Přehled</a>
 <br />
 <form method="post">
-<div>
-    <h2>Vlastnosti</h2>
-    <h3>Tělo</h3>
-    limit Tělo @Html.TextBox(nameof(Model.Hrdina.TeloLimit), Model.Hrdina.TeloLimit)
-    <h3>Duše</h3>
-    limit Tělo @Html.TextBox(nameof(Model.Hrdina.TeloLimit), Model.Hrdina.DuseLimit)
-    <h3>Vliv</h3>
-    limit Tělo @Html.TextBox(nameof(Model.Hrdina.TeloLimit), Model.Hrdina.VlivLimit)
-</div>
-<br />
-<h2>Schopnosti</h2>
-    @Html.DropDownListFor(m => m.Schopnosti, new SelectList(ViewBag.AllSchopnost, nameof(Schopnost.ID),nameof(Schopnost.Name)),"Schopnosti", new { Value = nameof(Model.Hrdina.Vybaveni), htmlAttributes = new { @class = "form-control" } } )
+    <div>
+        <h2>Vlastnosti</h2>
+        <h3>Tělo</h3>
+        limit Tělo @Html.TextBox(nameof(Model.Hrdina.TeloLimit), Model.Hrdina.TeloLimit,new { type="number", min="0" })
+        <h3>Duše</h3>
+        limit Tělo @Html.TextBox(nameof(Model.Hrdina.TeloLimit), Model.Hrdina.DuseLimit,new { type="number", min="0" })
+        <h3>Vliv</h3>
+        limit Tělo @Html.TextBox(nameof(Model.Hrdina.TeloLimit), Model.Hrdina.VlivLimit, new { type="number", min="0" })
+    </div>
+    <br />
+    <h2>Schopnosti</h2>
+    @Html.DropDownListFor(m => m.Schopnosti, new SelectList(ViewBag.AllSchopnost, nameof(Schopnost.ID),nameof(Schopnost.Name)), new { Value = nameof(Model.Schopnosti), htmlAttributes = new { @class = "form-control" } } )
     @*<select asp-for="EmployeeId"
-            asp-items="@(new SelectList(Model.EmployeesList, nameof(Employee.Id), nameof(Employee.FullName)))">
-        <option>Please select one</option>
+    asp-items="@(new SelectList(Model.EmployeesList, nameof(Employee.Id), nameof(Employee.FullName)))">
+    <option>Please select one</option>
     </select>*@
-<div class="container">
-    <div class="row">
-        @foreach (var schopnost in Model.Schopnosti)
-        {
-            <div class="col-lg-3 col-md-4 col-sm-6">
-                <div class="card">
-                    <div class="card-body">
+    <div class="container">
+        <div class="row">
+            @foreach (var schopnost in Model.Schopnosti)
+            {
+                <div class="col-lg-3 col-md-4 col-sm-6">
+                    <div class="card">
+                        <div class="card-body">
 
-                        @Html.Raw("<b><u>" + schopnost.Name + " </u></b> &nbsp;-&nbsp;")
-                        @Html.Raw(schopnost?.Povolani?.Name)
-                        <br />
-                        <i>@Html.Raw(schopnost?.Pravidlo)</i>
-                        <br />
-                        @Html.Raw(schopnost?.Description)
+                            @Html.Raw("<b><u>" + schopnost.Name + " </u></b> &nbsp;-&nbsp;")
+                            @Html.Raw(schopnost?.Povolani?.Name)
+                            <br />
+                            <i>@Html.Raw(schopnost?.Pravidlo)</i>
+                            <br />
+                            @Html.Raw(schopnost?.Description)
+                        </div>
                     </div>
                 </div>
-            </div>
-        }
+            }
+        </div>
     </div>
-</div>
-<h2>Povolání</h2>
-@for (int i = 0; i < Model.Povolani.Count; i++)
-{
-    @Html.Raw(Model.Povolani[i].Name)
-    @:&nbsp;
-    @Html.Raw(Model.HrdinovaPovolani.First(p => p.HrdinaId == Model.Hrdina.ID && p.PovolaniId == Model.Povolani[i].ID).Level)
-    <br />
-}  
+    <h2>Povolání</h2>
+    @for (int i = 0; i < Model.Povolani.Count; i++)
+    {
+        @Html.Raw(Model.Povolani[i].Name)
+        @:&nbsp;
+        <input asp-for="HrdinovaPovolani[i].Level" type="number" min="1" max="5">
+        <br />
+    }
+    @Html.DropDownListFor(m => m.Povolani, new SelectList(ViewBag.PossiblePovolani, nameof(WebApp1.Models.Database.Povolani.ID),nameof(WebApp1.Models.Database.Povolani.Name)), new { Value = nameof(Model.Povolani), htmlAttributes = new { @class = "form-control" } } )
 </form>
