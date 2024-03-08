@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Text.RegularExpressions;
 using WebApp1.DataAccess;
 using WebApp1.Models;
 using WebApp1.Models.Database;
@@ -99,7 +100,7 @@ namespace WebApp1.Controllers
                 { model.Hrdina.VlivJizva--; }
 
                 if (formData.ContainsKey(nameof(Hrdina.Penize)))
-                { model.Hrdina.Penize = Math.Round(decimal.Parse(formData[nameof(Hrdina.Penize)]),2); }
+                { model.Hrdina.Penize = Math.Round(decimal.Parse(formData[nameof(Hrdina.Penize)]), 2); }
 
                 if (formData.ContainsKey($"{nameof(Hrdina)}.{nameof(Hrdina.Zbrane)}"))
                 { model.Hrdina.Zbrane = formData[$"{nameof(Hrdina)}.{nameof(Hrdina.Zbrane)}"]; }
@@ -119,14 +120,10 @@ namespace WebApp1.Controllers
         public IActionResult Edit(int id)
         {
             var model = CreateHrdinaModel(id);
-            List<int> hrdinovaPovolaniIds = model.Povolani.Select(p => p.ID).ToList();
-            var schopnosts = Context.Schopnost.Where(s => hrdinovaPovolaniIds.Contains(s.PovolaniId)).OrderBy(s => s.Name).ToList();
-            ViewBag.AllSchopnost = schopnosts;
-            ViewBag.PossiblePovolani = Context.Povolani.Where(p => model.PossiblePovolani(model.HrdinovaPovolani).Contains(p.ID)); 
+            AddableAbilities(model);
 
             return View(model);
         }
-
 
         [HttpPost]
         public IActionResult Edit(IFormCollection formData)
@@ -136,7 +133,7 @@ namespace WebApp1.Controllers
             {
                 hrdinaId = int.Parse(formData["hrdina"]);
                 HrdinaModel model = CreateHrdinaModel(hrdinaId);
-
+                //limity vlasnosti
                 if (formData.ContainsKey(nameof(Hrdina.TeloLimit)))
                 { model.Hrdina.TeloLimit = int.Parse(formData[nameof(Hrdina.TeloLimit)]); }
                 if (formData.ContainsKey(nameof(Hrdina.DuseLimit)))
@@ -144,13 +141,65 @@ namespace WebApp1.Controllers
                 if (formData.ContainsKey(nameof(Hrdina.VlivLimit)))
                 { model.Hrdina.VlivLimit = int.Parse(formData[nameof(Hrdina.VlivLimit)]); }
 
+                //povolani
+                if (formData.ContainsKey("AddPovolani"))
+                {
+                    var novePovolani = new HrdinaPovolani()
+                    {
+                        HrdinaId = hrdinaId,
+                        PovolaniId = int.Parse(formData[nameof(Povolani)]),
+                        Level = 1
+                    };
+                    //model.HrdinovaPovolani.Add(novePovolani);
+                    Context.HrdinaPovolani.Add(novePovolani);
+                }
+                for (int i = 0; i < 15; i++)            //15 je maximalni pocet povolani
+                {
+                    string key = $"HrdinovaPovolani[{i}].Level";
+                    if (formData.ContainsKey(key))
+                    {
+                        model.HrdinovaPovolani[i].Level = int.Parse(formData[key]);
+                    }
+                }
 
+                //schopnost
+                if (formData.ContainsKey("AddSchopnost"))
+                {
+                    var novaSchonpost = new HrdinaSchopnost()
+                    {
+                        HrdinaId = hrdinaId,
+                        SchopnostId = int.Parse(formData[nameof(model.Schopnosti)])
+                    };
+                    Context.HrdinaSchopnosts.Add(novaSchonpost);
+                }
 
                 Context.SaveChanges();
-                return View(model);
+
+                model = CreateHrdinaModel(hrdinaId);
+
+                if (formData.ContainsKey("Save"))
+                { return View("Index", Context.Hrdina.ToList()); }
+                else
+                {
+                    AddableAbilities(model);
+                    return View(model);
+                }
+
             }
-                List<Hrdina> hrdinove = Context.Hrdina.ToList();
-            return View("Index",hrdinove);
+            List<Hrdina> hrdinove = Context.Hrdina.ToList();
+            return View("Index", hrdinove);
+        }
+
+        /// <summary>
+        /// Pridava do ViewBag seznam Povolani a Schopnosti, ktere muze hrdina v model pridat ke svym moznostem
+        /// </summary>
+        /// <param name="model">Obsahuje informace co uz hrdina ma. Na tomto zaklade se naplni ViewBag temi co si jeste hrdina muze pridat</param>
+        private void AddableAbilities(HrdinaModel model)
+        {
+            List<int> hrdinovaPovolaniIds = model.Povolani.Select(p => p.ID).ToList();
+            var schopnosts = Context.Schopnost.Where(s => hrdinovaPovolaniIds.Contains(s.PovolaniId) && !model.Schopnosti.Contains(s)).OrderBy(s => s.Name).ToList();
+            ViewBag.AllSchopnost = schopnosts;
+            ViewBag.PossiblePovolani = Context.Povolani.Where(p => model.PossiblePovolani(model.HrdinovaPovolani).Contains(p.ID));
         }
 
         public IActionResult Delete(int id)
