@@ -110,8 +110,9 @@ namespace WebApp1.Controllers
                 if (formData.ContainsKey(nameof(Hrdina.Suroviny)))
                 { model.Hrdina.Suroviny = int.Parse(formData[nameof(Hrdina.Suroviny)]); }
 
-                if (formData.ContainsKey(nameof(Hrdina.Zkusenosti)))
-                { model.Hrdina.Zkusenosti += int.Parse(formData[nameof(Hrdina.Zkusenosti)]); }
+                var a = formData["zkusenosti"];
+                if (int.TryParse(formData[nameof(Hrdina.Zkusenosti)], out int zkusenosti))
+                { model.Hrdina.Zkusenosti += zkusenosti; }//.Parse(formData[nameof(Hrdina.Zkusenosti)]); }
 
                 Context.SaveChanges();
                 return View("Play", model);
