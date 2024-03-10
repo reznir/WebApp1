@@ -164,7 +164,21 @@
             }
         </div>
     </div>
-    </div>
+    <br />
+    <h2>Zkušenosti</h2>    
+    @{
+        int maxLevel = Model.Hrdina.Zkusenosti / 12;
+        int skutecnyLevel = Model.Hrdina.TeloLimit + Model.Hrdina.DuseLimit + Model.Hrdina.VlivLimit - 15; 
+        Model.HrdinovaPovolani.ForEach(p => skutecnyLevel += p.Level);
+        int zbyleZkusenosti = Model.Hrdina.Zkusenosti % 12;
+    }
+    Současná úroveň: @skutecnyLevel / @maxLevel
+    <br />
+    Zbytek @zbyleZkusenosti
+    <br />
+    <input name="zkusenosti" type="number" />
+    <button type="submit" name="@nameof(Model.Hrdina.Zkusenosti)">Přidat zkušenosti</button>
+
     @section scripts {
 
         <script type="text/javascript">

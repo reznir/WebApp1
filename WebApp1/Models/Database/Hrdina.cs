@@ -23,6 +23,7 @@ namespace WebApp1.Models
             Vliv = VlivLimit;
             Penize = 0;
             Suroviny = 0;
+            Zkusenosti = 0;
         }
 
         [Column("ID")]
@@ -84,5 +85,8 @@ namespace WebApp1.Models
 
         [Column("RASA", TypeName = "NVARCHAR(10)")]
         public string? Rasa { get; set; }
+
+        [Column("ZKUSENOSTI")]
+        public int Zkusenosti { get; set; }
     }
 }

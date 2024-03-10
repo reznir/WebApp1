@@ -46,7 +46,7 @@ namespace WebApp1.Models
             { moznaPovolaniIds.Add((int) Povolanis.Hranicar); }
             if (TestPovolaniMozne(hrdinovaPovolani, (int) Povolanis.Lovec, (int) Povolanis.Kejklir) && !hrdinovaPovolani.Any(p => p.PovolaniId == (int) Povolanis.Zved))
             { moznaPovolaniIds.Add((int)Povolanis.Zved); }
-            if (TestPovolaniMozne(hrdinovaPovolani, (int)Povolanis.Kejklir, (int)Povolanis.Mastickar) && !hrdinovaPovolani.Any(p => p.PovolaniId == (int)Povolanis.Mag))
+            if (TestPovolaniMozne(hrdinovaPovolani, (int)Povolanis.Kejklir, (int)Povolanis.Zarikavac) && !hrdinovaPovolani.Any(p => p.PovolaniId == (int)Povolanis.Mag))
             { moznaPovolaniIds.Add((int)Povolanis.Mag); }
             if (TestPovolaniMozne(hrdinovaPovolani, (int)Povolanis.Mastickar, (int)Povolanis.Zarikavac) && !hrdinovaPovolani.Any(p => p.PovolaniId == (int)Povolanis.Alchymista))
             { moznaPovolaniIds.Add((int)Povolanis.Alchymista); }
