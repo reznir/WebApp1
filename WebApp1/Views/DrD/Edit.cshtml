@@ -52,11 +52,22 @@
         @Html.Raw(Model.Povolani[i].Name)
         @:&nbsp;
         <input asp-for="HrdinovaPovolani[i].Level" type="number" min="1" max="5"> @*name= "povolani @povolaniId"*@
-       
+
         <br />
     }
     @Html.DropDownListFor(m => m.Povolani, new SelectList(ViewBag.PossiblePovolani, nameof(WebApp1.Models.Database.Povolani.ID),nameof(WebApp1.Models.Database.Povolani.Name)), new { Value = nameof(WebApp1.Models.Database.Povolani), htmlAttributes = new { @class = "form-control" } } )
-    <button type="submit" name="AddPovolani">Přidat</button>
+    @{
+        int skutecnyLevel = Model.Hrdina.TeloLimit + Model.Hrdina.DuseLimit + Model.Hrdina.VlivLimit - 15;
+        Model.HrdinovaPovolani.ForEach(p => skutecnyLevel += p.Level);
+        if (Model.Hrdina.Zkusenosti / 12 > skutecnyLevel)
+        {
+            <button type="submit" name="AddPovolani">Přidat</button>
+        }
+        else
+        {
+            <button type="submit" disabled name="AddPovolani">Přidat</button>
+        }
+    }
     <br>
 
     <button type="submit" name="Save">Uložit</button>
