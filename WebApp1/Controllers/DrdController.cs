@@ -272,15 +272,16 @@ namespace WebApp1.Controllers
         {
             ViewBag.Povolani = Context.Povolani.ToList();
             ViewBag.Vlastnosti = new List<string>() { "Tělo", "Duše", "Vliv" };
-        
-            return View();
-    }
 
-    [HttpPost]
-    public IActionResult NewSchopnost(Schopnost schopnost)
-    {
-        Context.Schopnost.Add(schopnost);
-        return View("Index", Context.Hrdina.ToList());
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult NewSchopnost(Schopnost schopnost)
+        {
+            Context.Schopnost.Add(schopnost);
+            Context.SaveChanges();
+            return View("Index", Context.Hrdina.ToList());
+        }
     }
-}
 }
