@@ -2,6 +2,7 @@
 using NuGet.Protocol;
 using WebApp1.DataAccess;
 using WebApp1.Models;
+using WebApp1.Models.Texty;
 
 namespace WebApp1.Controllers
 {
@@ -15,34 +16,34 @@ namespace WebApp1.Controllers
         }
         public IActionResult Index(int svatekId)
         {
-            var litTexts = context.LitText.Where(t => t.SvateId == svatekId).ToList();
-            ViewData[nameof(litTexts.Count)] = litTexts.Count;
-            ViewData[nameof(litTexts)] = litTexts;
-            return View(context);
-        }
-
-        [HttpPost]
-        public IActionResult Index(string text, DateTime date, Cyklus cyklus)
-        {
-            LitText litText = new()
+            List<LitText> litTexts = new();
+            if (svatekId != 0)
+            { litTexts = context.LitText.Where(t => t.SvateId == svatekId).ToList(); }            
+            var model = new SvatkyModel()
             {
-                Text = text,
-                Cyklus = cyklus.ToString(),
+                Doby = context.Doba.ToList(),
+                Svatky = context.Svatek.ToList(),
+                LitTexty = litTexts                
             };
-            LiturgickyRok rok = new(date);
-            litText.SvateId = rok.GetSvatekId(date);
-            litText.Nazev_dne = rok.NazevDne;
-
-            context.LitText.Add(litText);
-            context.SaveChanges();
-            return View(context);
+            return View(model);
         }
 
-
-        [HttpPost]
-        public IActionResult Index(DateTime date, Cyklus cyklus, string searchText)
+        public IActionResult Delete(int textId)
         {
-            return View(context);
+            var litText = context.LitText.FirstOrDefault(t => t.Id == textId);
+            List<LitText> litTexts = new();
+            if (litText != null)
+            {
+                context.LitText.Remove(litText);
+                litTexts = context.LitText.Where(t => t.SvateId == litText.SvateId).ToList();
+            }
+            var model = new SvatkyModel()
+            {
+                Doby = context.Doba.ToList(),
+                Svatky = context.Svatek.ToList(),
+                LitTexty = litTexts
+            };
+            return View("Index", model);
         }
 
         public IActionResult MainPage()

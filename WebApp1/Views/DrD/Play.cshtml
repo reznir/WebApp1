@@ -126,9 +126,11 @@
             <br />
             <h2>Vybavení</h2>
             <h3>Peníze</h3>
-                @Html.TextBox(nameof(Model.Hrdina.Penize), Model.Hrdina.Penize)
+                @Html.TextBox(nameof(Model.Hrdina.Penize), Model.Hrdina.Penize, new { @type = "number", min="0" })
+            @*<input type="number" min="0" name="@nameof(Model.Hrdina.Penize)" />*@
             <h3>Suroviny</h3>
-                @Html.TextBox(nameof(Model.Hrdina.Suroviny), Model.Hrdina.Suroviny)
+            @*<input type="number" min="0" name="@nameof(Model.Hrdina.Suroviny)" />*@
+                @Html.TextBox(nameof(Model.Hrdina.Suroviny), Model.Hrdina.Suroviny,  new { @type = "number", min="0" })
             <h3>Zbraně</h3>
                 @Html.TextAreaFor(m => m.Hrdina.Zbrane, new { Value = "Zbrane", htmlAttributes = new { @class = "form-control" } })
             <h3>Vybavení</h3>

@@ -1,5 +1,5 @@
 ﻿@using WebApp1.DataAccess;
-@model LitTextyDbContext
+@model WebApp1.Models.Texty.SvatkyModel
 @{
     ViewData["Title"] = "Liturgicke texty";
 }
@@ -24,23 +24,7 @@
 </head>
 <body>
     <div class="container">
-        <div class="nav">
-            <ul id="myUL">
-                @foreach (Doba doba in Model.Doba.ToList())
-                {
-                    <li>
-                        <span class="caret">@doba.CelyNazev</span>
-                        <ul class="nested">
-                            @foreach (Svatek svatek in Model.Svatek.Where(s => s.DobaId == doba.Id).ToList())
-                            {
-                                <li><a asp-controller="Texty" asp-action=Index asp-route-svatekId=@svatek.Id> @svatek.Cely_nazev</a></li>
-                            }
-                        </ul>
-                    </li>
-                }
-
-            </ul>
-        </div>
+        @Html.Partial("SvatkyListView",Model)
         <div class="content">
             @if (ViewData["Count"] as int? > 1)
             {
@@ -66,6 +50,9 @@
                             <th align="center">
                                 <a asp-action="Index" asp-route-sort=@nameof(LitText.Text)>@nameof(LitText.Text)</a>
                             </th>
+                            <th align="center" colspan="2">
+
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -80,6 +67,16 @@
                                 </td>
                                 <td width="50%">
                                     @litText?.Text
+                                </td>
+                                <td>
+                                    <a class="btn btn-primary table-striped-columns" asp-controller="Texty" asp-action="Index" asp-route-id="@litText?.Id">
+                                        Edit
+                                    </a>
+                                </td>
+                                <td>
+                                    <a class="btn btn-primary table-striped-columns" asp-controller="Texty" asp-action="Delete" asp-route-id="@litText?.Id">
+                                        Delete
+                                    </a>
                                 </td>
                             </tr>
                         }

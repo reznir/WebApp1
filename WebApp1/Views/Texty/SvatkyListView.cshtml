@@ -1,0 +1,19 @@
+﻿@model WebApp1.Models.Texty.SvatkyModel
+
+
+<div class="nav">
+    <ul id="myUL">
+        @foreach (Doba doba in Model.Doby)
+        {
+            <li>
+                <span class="caret">@doba.CelyNazev</span>
+                <ul class="nested">
+                    @foreach (Svatek svatek in Model.Svatky.Where(s => s.DobaId == doba.Id).ToList())
+                    {
+                        <li><a asp-controller="Texty" asp-action=Index asp-route-svatekId=@svatek.Id> @svatek.Cely_nazev</a></li>
+                    }
+                </ul>
+            </li>
+        }
+    </ul>
+</div>
