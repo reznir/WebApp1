@@ -1,0 +1,50 @@
+﻿@using WebApp1.Models.Database;
+@model WebApp1.Models.Schopnost
+
+@{
+    ViewData["Title"] = "Dračí doupě - Nová schopnost";
+}
+
+<h1>Nová schopnost</h1>
+
+<h4>Schopnost</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="NewSchopnost">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                Název:
+                <input asp-for="Name" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                Popis:
+                <input asp-for="Description" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                Následky podle pravidel (volitelné):
+                <input asp-for="Pravidlo" />
+                <span asp-validation-for="Pravidlo" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Vlastnost" class="control-label"></label>
+                <select asp-for="Vlastnost" asp-items="@(new SelectList(ViewBag.Vlastnosti))"></select>
+                <span asp-validation-for="Vlastnost" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                Povolání:
+                <select asp-for="PovolaniId" asp-items="@(new SelectList(ViewBag.Povolani, nameof(Povolani.ID), nameof(Povolani.Name)))"></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Vytvořit" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

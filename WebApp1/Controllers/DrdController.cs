@@ -267,5 +267,20 @@ namespace WebApp1.Controllers
 
             return model;
         }
+
+        public IActionResult NewSchopnost()
+        {
+            ViewBag.Povolani = Context.Povolani.ToList();
+            ViewBag.Vlastnosti = new List<string>() { "Tělo", "Duše", "Vliv" };
+        
+            return View();
     }
+
+    [HttpPost]
+    public IActionResult NewSchopnost(Schopnost schopnost)
+    {
+        Context.Schopnost.Add(schopnost);
+        return View("Index", Context.Hrdina.ToList());
+    }
+}
 }
