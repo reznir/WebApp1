@@ -23,8 +23,8 @@
 
     <h2>Schopnosti</h2>
     @Html.DropDownListFor(m => m.Schopnosti, new SelectList(ViewBag.AllSchopnost, nameof(Schopnost.ID),nameof(Schopnost.Name)), new { Value = nameof(Schopnost), htmlAttributes = new { @class = "form-control" } } )
-    <button type="submit" class="btn btn-primary" name="AddSchopnost">Přidat</button>
-    <a asp-controller="DrD" asp-action="NewSchopnost" class="btn btn-primary" >Nová</a>
+    <button type="submit" name="AddSchopnost">Přidat</button>
+    <button asp-controller="DrD" asp-action="NewSchopnost" type="submit" name="NewSchopnost">Nová</button>
     <br />
     <div class="container">
         <div class="row">

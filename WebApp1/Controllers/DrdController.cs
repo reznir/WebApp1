@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Primitives;
 using System.Text.RegularExpressions;
 using WebApp1.DataAccess;
 using WebApp1.Models;
 using WebApp1.Models.Database;
+using WebApp1.Models.Drd;
 
 namespace WebApp1.Controllers
 {
@@ -132,6 +134,141 @@ namespace WebApp1.Controllers
         [HttpPost]
         public IActionResult Edit(IFormCollection formData)
         {
+            HrdinaModel model = SaveEditedHrdina(formData);
+
+            if (formData.ContainsKey("Save") || model == null)
+            { return View("Index", Context.Hrdina.ToList()); }
+            else
+            {
+                AddableAbilities(model);
+                return View(model);
+            }
+        }
+
+        /// <summary>
+        /// Pridava do ViewBag seznam Povolani a Schopnosti, ktere muze hrdina v model pridat ke svym moznostem.
+        /// Pro Edit View.
+        /// </summary>
+        /// <param name="model">Obsahuje informace co uz hrdina ma. Na tomto zaklade se naplni ViewBag temi co si jeste hrdina muze pridat</param>
+        private void AddableAbilities(HrdinaModel model)
+        {
+            List<int> hrdinovaPovolaniIds = model.Povolani.Select(p => p.ID).ToList();
+            var schopnosts = Context.Schopnost.Where(s => hrdinovaPovolaniIds.Contains(s.PovolaniId) && !model.Schopnosti.Contains(s)).OrderBy(s => s.Name).ToList();
+            ViewBag.AllSchopnost = schopnosts;
+            ViewBag.PossiblePovolani = Context.Povolani.Where(p => model.PossiblePovolani(model.HrdinovaPovolani).Contains(p.ID));
+        }
+
+        public IActionResult Delete(int id)
+        {
+            Context.Hrdina.Remove(Context.Hrdina.First(p => p.ID == id));
+            Context.SaveChanges();
+            return View("Index", Context.Hrdina.ToList());
+        }
+
+        public IActionResult New()
+        { return View(); }
+
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult New(Hrdina created)
+        {
+            try
+            {
+                //foreach (var error in Tasks.AddNew(created))
+                //{
+                //    ModelState.AddModelError(error.Key, error.Value);
+                //}
+                created.Telo = created.TeloLimit;
+                created.Vliv = created.VlivLimit;
+                created.Duse = created.DuseLimit;
+                Context.Hrdina.Add(created);
+                Context.SaveChanges();
+
+                //if (!ModelState.IsValid)
+                //{ return View(); }
+
+                //TempData["success"] = created;
+                var model = CreateHrdinaModel(created.ID);
+                var list = Context.Hrdina.ToList();
+                return View("Index", list);
+                //return View();
+            }
+            catch (Exception ex)
+            {
+                //TempData["error"] = ex;
+                return View("Error");
+            }
+            //return RedirectToAction(nameof(Index));
+        }
+
+        /// <summary>
+        /// Creates HrdinaModel which contains Hrdina, his Povolani and connection table for the hrdina, his Schopnosti
+        /// </summary>
+        /// <param name="hrdinaId">ID of Hrdina in database</param>
+        /// <returns>HrdinaModel for most views</returns>
+        HrdinaModel CreateHrdinaModel(int hrdinaId)
+        {
+            Hrdina hrdina = Context.Hrdina.First(h => h.ID == hrdinaId);
+            List<HrdinaPovolani> povolaniList = Context.HrdinaPovolani.Where(p => p.HrdinaId == hrdina.ID).ToList();
+            List<int> profeseId = povolaniList.Select(p => p.PovolaniId).ToList();
+            List<Povolani> profese = Context.Povolani.Where(p => profeseId.Contains(p.ID)).ToList();
+            List<int> schopnostiId = Context.HrdinaSchopnosts.Where(s => s.HrdinaId == hrdina.ID).Select(s => s.SchopnostId).ToList();
+            List<Schopnost> schopnosti = Context.Schopnost.Where(s => schopnostiId.Contains(s.ID)).OrderBy(s => s.PovolaniId).ToList();
+
+            HrdinaModel model = new()
+            {
+                Hrdina = hrdina,
+                Povolani = profese,
+                HrdinovaPovolani = povolaniList,
+                Schopnosti = schopnosti
+            };
+
+            return model;
+        }
+
+        [HttpPost]
+        public IActionResult NewSchopnost(Schopnost schopnost, IFormCollection formData)
+        {
+            //if user clicked NewSchopnost button
+            if (formData.ContainsKey("NewSchopnost"))
+            {
+                //save Hrdina from Edit View (as user could made some changes before creating new Schopnost
+                HrdinaModel model = SaveEditedHrdina(formData);
+                //Set ViewBag roperties for display in NewSchopnost View
+                ViewBag.HrdinaId = model.Hrdina.ID;
+                ViewBag.Povolani = Context.Povolani.ToList();
+                ViewBag.Vlastnosti = new List<string>() { "Tělo", "Duše", "Vliv" };
+                return View();
+            }
+            else
+            {
+                int hrdinaId = int.Parse(formData[nameof(Hrdina)]);
+                Context.Schopnost.Add(schopnost);
+                Context.SaveChanges();
+                if (Context.HrdinaPovolani.Any(p => p.HrdinaId == hrdinaId && p.PovolaniId == schopnost.PovolaniId))
+                {
+                    Context.HrdinaSchopnosts.Add(new HrdinaSchopnost()
+                    {
+                        HrdinaId = hrdinaId,
+                        SchopnostId = schopnost.ID
+                    });
+                    Context.SaveChanges();
+                }
+                HrdinaModel model = CreateHrdinaModel(hrdinaId);
+                AddableAbilities(model);
+                return View("Edit", model);
+            }
+        }
+
+        /// <summary>
+        /// Saves modifications entered in Edit View from its IFormCollection to database.
+        /// Returns HrdinaModel used for most Views
+        /// </summary>
+        /// <param name="formData">IFormCollection from Edit View</param>
+        /// <returns>HrdinaModel</returns>
+        private HrdinaModel SaveEditedHrdina(IFormCollection formData)
+        {
             int hrdinaId;
             if (formData.ContainsKey("hrdina"))
             {
@@ -180,108 +317,56 @@ namespace WebApp1.Controllers
                 Context.SaveChanges();
 
                 model = CreateHrdinaModel(hrdinaId);
+                return model;
+            }
+            return null;
+        }
 
-                if (formData.ContainsKey("Save"))
-                { return View("Index", Context.Hrdina.ToList()); }
-                else
+
+        public IActionResult Postavy(IFormCollection formData)
+        {
+            var model = new Postavy();
+            if (formData.ContainsKey("Created") && formData["Created"].Equals("on"))
+            {
+                for (int i = 0; i < int.Parse(formData["Count"]); i++)
                 {
-                    AddableAbilities(model);
-                    return View(model);
+                    model.Postavas.Add(new Models.Drd.Postavy.Postava(i));
+
                 }
-
             }
-            List<Hrdina> hrdinove = Context.Hrdina.ToList();
-            return View("Index", hrdinove);
-        }
-
-        /// <summary>
-        /// Pridava do ViewBag seznam Povolani a Schopnosti, ktere muze hrdina v model pridat ke svym moznostem
-        /// </summary>
-        /// <param name="model">Obsahuje informace co uz hrdina ma. Na tomto zaklade se naplni ViewBag temi co si jeste hrdina muze pridat</param>
-        private void AddableAbilities(HrdinaModel model)
-        {
-            List<int> hrdinovaPovolaniIds = model.Povolani.Select(p => p.ID).ToList();
-            var schopnosts = Context.Schopnost.Where(s => hrdinovaPovolaniIds.Contains(s.PovolaniId) && !model.Schopnosti.Contains(s)).OrderBy(s => s.Name).ToList();
-            ViewBag.AllSchopnost = schopnosts;
-            ViewBag.PossiblePovolani = Context.Povolani.Where(p => model.PossiblePovolani(model.HrdinovaPovolani).Contains(p.ID));
-        }
-
-        public IActionResult Delete(int id)
-        {
-            Context.Hrdina.Remove(Context.Hrdina.First(p => p.ID == id));
-            Context.SaveChanges();
-            return View("Index", Context.Hrdina.ToList());
-        }
-
-        public IActionResult New()
-        { return View(); }
-
-
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public IActionResult New(Hrdina created)
-        {
-            try
+            else
             {
-                //foreach (var error in Tasks.AddNew(created))
-                //{
-                //    ModelState.AddModelError(error.Key, error.Value);
-                //}
-                created.Telo = created.TeloLimit;
-                created.Vliv = created.VlivLimit;
-                created.Duse = created.DuseLimit;
-                Context.Hrdina.Add(created);
-                Context.SaveChanges();
-
-                //if (!ModelState.IsValid)
-                //{ return View(); }
-
-                TempData["success"] = created;
-                var model = CreateHrdinaModel(created.ID);
-                return View("Index", Context.Hrdina.ToList());
+                if (formData.ContainsKey("Count"))
+                {
+                    int count = int.Parse(formData["Count"]);
+                    for (int i = 0; i < count; i++)
+                    {
+                        var postava = new Models.Drd.Postavy.Postava(i);
+                        if (formData.ContainsKey("Ohrozeni"))
+                        { postava.Ohrozeni = int.Parse(formData["Ohrozeni"]); }
+                        model.Postavas.Add(postava);
+                    }
+                    if (formData.ContainsKey("Sudba"))
+                    { model.Sudba = int.Parse(formData["Sudba"]) + count - 1; }
+                }
             }
-            catch (Exception ex)
-            {
-                TempData["error"] = ex;
-                return View("Error");
-            }
-            //return RedirectToAction(nameof(Index));
+            return View(model);
         }
 
-        HrdinaModel CreateHrdinaModel(int hrdinaId)
-        {
-            Hrdina hrdina = Context.Hrdina.First(h => h.ID == hrdinaId);
-            List<HrdinaPovolani> povolaniList = Context.HrdinaPovolani.Where(p => p.HrdinaId == hrdina.ID).ToList();
-            List<int> profeseId = povolaniList.Select(p => p.PovolaniId).ToList();
-            List<Povolani> profese = Context.Povolani.Where(p => profeseId.Contains(p.ID)).ToList();
-            List<int> schopnostiId = Context.HrdinaSchopnosts.Where(s => s.HrdinaId == hrdina.ID).Select(s => s.SchopnostId).ToList();
-            List<Schopnost> schopnosti = Context.Schopnost.Where(s => schopnostiId.Contains(s.ID)).ToList();
+        //[HttpPost]
+        //public IActionResult Postavy(IFormCollection formData)
+        //{
+        //var model = new Postavy();
 
-            HrdinaModel model = new()
-            {
-                Hrdina = hrdina,
-                Povolani = profese,
-                HrdinovaPovolani = povolaniList,
-                Schopnosti = schopnosti
-            };
-
-            return model;
-        }
-
-        public IActionResult NewSchopnost()
-        {
-            ViewBag.Povolani = Context.Povolani.ToList();
-            ViewBag.Vlastnosti = new List<string>() { "Tělo", "Duše", "Vliv" };
-
-            return View();
-        }
-
-        [HttpPost]
-        public IActionResult NewSchopnost(Schopnost schopnost)
-        {
-            Context.Schopnost.Add(schopnost);
-            Context.SaveChanges();
-            return View("Index", Context.Hrdina.ToList());
-        }
+        //for (int i = 0; i < 10; i++)
+        //{
+        //    string checkboxName = $"{nameof(Hrdina.Ohrozeni)} {i}";
+        //    if (formData.ContainsKey(checkboxName) && formData[checkboxName].Equals("on"))
+        //    {
+        //        //model.Hrdina.Ohrozeni++;
+        //    }
+        //}
+        //return View(model);
+        //}
     }
 }

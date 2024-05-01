@@ -12,29 +12,35 @@
 <div class="row">
     <div class="col-md-4">
         <form asp-action="NewSchopnost">
+            <input type="hidden" name="hrdina" value="@ViewBag.HrdinaId">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 Název:
                 <input asp-for="Name" />
+                <br />
                 <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
                 Popis:
+                <br />
                 @Html.TextAreaFor(m => m.Description)
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
                 Následky podle pravidel (volitelné):
+                <br />
                 <input asp-for="Pravidlo" />
                 <span asp-validation-for="Pravidlo" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Vlastnost" class="control-label"></label>
+                <br />
                 <select asp-for="Vlastnost" asp-items="@(new SelectList(ViewBag.Vlastnosti))"></select>
                 <span asp-validation-for="Vlastnost" class="text-danger"></span>
             </div>
             <div class="form-group">
                 Povolání:
+                <br />
                 <select asp-for="PovolaniId" asp-items="@(new SelectList(ViewBag.Povolani, nameof(Povolani.ID), nameof(Povolani.Name)))"></select>
             </div>
             <div class="form-group">

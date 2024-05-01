@@ -1,0 +1,84 @@
+﻿@model WebApp1.Models.Drd.Postavy
+@{
+    ViewData["Title"] = "Dračí doupě";
+}
+
+<h2>Postavy</h2>
+<a href="/DrD/Index">Přehled</a>
+<br />
+<form asp-action="Postavy" asp-controller="DrD" method="post">
+    <input type="number" hidden value="@Model.Count" name="Count" />
+    <input type="checkbox" hidden checked name="Created" />
+    Sudba:
+    @for (int i = 0; i < Model.Sudba; i++)
+    {
+        <input type="checkbox" checked name="sudba @i">
+    }
+    <br />
+    <input type="number" name="AddSudba" />
+    <button type="submit" class="btn-primary">Přidat sudbu</button>
+    <br />
+    <table>
+        <thead>
+            <tr>
+                <td align="center">
+                    ID
+                </td>
+                <td align="center">
+                    Popis
+                </td>
+                <td align="center">
+                    Barva
+                </td>
+                <td align="left">
+                    Ohrozeni
+                </td>
+                <td align="center" colspan="3">
+                    Iniciativa
+                </td>
+                <td>
+                    Umřít
+                </td>
+            </tr>
+        </thead>
+        @foreach (var postava in Model.Postavas)
+        {
+            <tr>
+                <td>
+                    @postava.ID
+                </td>
+                <td>
+                    <input type="text" name="@postava.ID">
+                </td>
+                <td>
+                    @postava.Color
+                </td>
+                <td>
+                    @for (int i = 0; i < 10; i++)
+                    { @if (i < postava.Ohrozeni)
+                        {
+                            <input type="checkbox" checked name="@postava.ID @i">
+                        }
+                        else
+                        {
+                            <input type="checkbox" name="@postava.ID @i">
+                        }
+                    }
+                </td>
+                <td>
+                    @postava.Iniciativa1 +
+                </td>
+                <td>
+                    @postava.Iniciativa2 =
+                </td>
+                <td>
+                     &nbsp;@(postava.Iniciativa1 + postava.Iniciativa2)&nbsp;
+                </td>
+                <td>
+                    <button type="submit" class="btn-primary">Delete</button>
+                </td>
+            </tr>
+        }
+    </table>
+    <button type="submit">Uložit</button>
+</form>
