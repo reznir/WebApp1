@@ -23,7 +23,7 @@ namespace WebApp1.Models.Drd
             {
                 ID = id;
                 Ohrozeni = 2;
-                Color color = System.Drawing.Color.FromName(((Colors)(id%15)).ToString());
+                Color color = System.Drawing.Color.FromName(((Colors)(id%20)).ToString());
                 Color = $"#{color.R:X2}{color.G:X2}{color.B:X2}";
                 Popis = string.Concat("Postava ", ID.ToString());
                 CountIniciativ();
@@ -52,8 +52,13 @@ namespace WebApp1.Models.Drd
             Brown = 10,
             Navy = 11,
             Lime = 12,
-            GreenYellow = 13,
+            PaleTurquoise = 13,
             Magenta = 14,
+            SkyBlue = 15,
+            Silver = 16,
+            Purple = 17,
+            OliveDrab = 18,
+            OrangeRed = 19,
         }
     }
 }

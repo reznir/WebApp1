@@ -358,7 +358,11 @@ namespace WebApp1.Controllers
                     else { deleted = 1; }
                     i++;
                 }
-
+                if (formData.ContainsKey("pridat"))
+                {
+                    model.Postavas.Add(new Models.Drd.Postavy.Postava(i));
+                    model.Postavas[i].Popis = "nova";
+                }
             }
             //from Index
             else
