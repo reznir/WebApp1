@@ -7,7 +7,7 @@
 <a href="/DrD/Index">Přehled</a>
 <br />
 <form asp-action="Postavy" asp-controller="DrD" method="post">
-    <input type="number" hidden value="@Model.Count" name="Count" />
+    <input type="number" hidden placeholder="@Model.Count" name="Count" value="@Model.Count" />
     <input type="checkbox" hidden checked name="Created" />
     Sudba:
     @for (int i = 0; i < Model.Sudba; i++)
@@ -48,10 +48,10 @@
                     @postava.ID
                 </td>
                 <td>
-                    <input type="text" name="@postava.ID">
+                    <input type="text" name="@postava.ID" placeholder="@postava.Popis" value="@postava.Popis">
                 </td>
                 <td>
-                    @postava.Color
+                    <input type="color" value="@postava.Color" name="barva @postava.ID" style="background-color:@postava.Color">
                 </td>
                 <td>
                     @for (int i = 0; i < 10; i++)
@@ -75,10 +75,10 @@
                      &nbsp;@(postava.Iniciativa1 + postava.Iniciativa2)&nbsp;
                 </td>
                 <td>
-                    <button type="submit" class="btn-primary">Delete</button>
+                    <button type="submit" name="delete @postava.ID" class="btn-primary">Delete</button>
                 </td>
             </tr>
         }
     </table>
-    <button type="submit">Uložit</button>
+    <button type="submit" class="btn-primary" name="pridat">Přidat</button>
 </form>

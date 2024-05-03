@@ -326,14 +326,41 @@ namespace WebApp1.Controllers
         public IActionResult Postavy(IFormCollection formData)
         {
             var model = new Postavy();
+            //from postavy.cshtml
             if (formData.ContainsKey("Created") && formData["Created"].Equals("on"))
             {
-                for (int i = 0; i < int.Parse(formData["Count"]); i++)
+                //count sudba
+                int s = 0;
+                int deleted = 0;
+                while (formData.ContainsKey($"sudba {s}"))
                 {
-                    model.Postavas.Add(new Models.Drd.Postavy.Postava(i));
-
+                    s++;
                 }
+                model.Sudba = s;
+                if (int.TryParse(formData["AddSudba"], out int plusSudba))
+                { model.Sudba += plusSudba; }
+                //count ohrozeni
+                int i = 0;
+                while (formData.ContainsKey(i.ToString()))
+                {
+                    if (!formData.ContainsKey($"delete {i}"))
+                    {
+                        model.Postavas.Add(new Postavy.Postava(i - deleted));
+                        model.Postavas[i - deleted].Color = formData[$"barva {i}"];
+                        model.Postavas[i - deleted].Popis = formData[i.ToString()];
+                        int j = 0;
+                        while (formData.ContainsKey($"{i} {j}"))
+                        {
+                            j++;
+                        }
+                        model.Postavas[i - deleted].Ohrozeni = j;
+                    }
+                    else { deleted = 1; }
+                    i++;
+                }
+
             }
+            //from Index
             else
             {
                 if (formData.ContainsKey("Count"))
@@ -341,7 +368,7 @@ namespace WebApp1.Controllers
                     int count = int.Parse(formData["Count"]);
                     for (int i = 0; i < count; i++)
                     {
-                        var postava = new Models.Drd.Postavy.Postava(i);
+                        var postava = new Postavy.Postava(i);
                         if (formData.ContainsKey("Ohrozeni"))
                         { postava.Ohrozeni = int.Parse(formData["Ohrozeni"]); }
                         model.Postavas.Add(postava);

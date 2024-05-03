@@ -1,4 +1,6 @@
-﻿namespace WebApp1.Models.Drd
+﻿using System.Drawing;
+
+namespace WebApp1.Models.Drd
 {
     public class Postavy
     {
@@ -21,16 +23,37 @@
             {
                 ID = id;
                 Ohrozeni = 2;
+                Color color = System.Drawing.Color.FromName(((Colors)(id%15)).ToString());
+                Color = $"#{color.R:X2}{color.G:X2}{color.B:X2}";
                 Popis = string.Concat("Postava ", ID.ToString());
-                CountIniciativa();
+                CountIniciativ();
             }
 
-            public void CountIniciativa()
+            public void CountIniciativ()
             {
                 Random random = new Random();
-                Iniciativa1 = random.Next(1,7);
-                Iniciativa2 = random.Next(1,7);
+                Iniciativa1 = random.Next(1, 7);
+                Iniciativa2 = random.Next(1, 7);
             }
+        }
+
+        public enum Colors
+        {
+            Red = 0,
+            Green = 1,
+            Blue = 2,
+            Yellow = 3,
+            Black = 4,
+            White = 5,
+            Violet = 6,
+            Pink = 7,
+            Teal = 8,
+            Tan = 9,
+            Brown = 10,
+            Navy = 11,
+            Lime = 12,
+            GreenYellow = 13,
+            Magenta = 14,
         }
     }
 }
