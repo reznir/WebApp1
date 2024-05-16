@@ -288,12 +288,12 @@
             return svatekId;
         }
 
-        public Dictionary<int, string> DnyTydne { get; set; } = new() { { 1, "pondělí" }, { 2, "úterý" }, { 3, "středa" }, { 4, "čtvrtek" }, { 5, "pátek" }, { 6, "sobota" }, { 7, "neděle" } };
+        public Dictionary<int, string> DnyTydne { get; set; } = new() { { 1, "pondělí" }, { 2, "úterý" }, { 3, "středa" }, { 4, "čtvrtek" }, { 5, "pátek" }, { 6, "sobota" }, { 0, "neděle" } };
 
         ///END liturgickyRok class
     }
 
-    enum Tyden
+    public enum Tyden
     {
         pondělí = 1,
         úterý = 2,

@@ -15,4 +15,10 @@ namespace WebApp1.Models
         Svatek = 2,
         LitText = 3,
     }
+
+    public enum AllNothing
+    {
+        None = -1,
+        All = 0
+    }
 }

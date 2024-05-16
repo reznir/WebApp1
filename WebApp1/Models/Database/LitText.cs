@@ -26,7 +26,7 @@ namespace WebApp1.Models
         public DateTime? Updated { get; set; }
 
         [Column("SVATEK_ID"),ForeignKey("Svatek")]
-        public int? SvateId { get; set; }
+        public int? SvatekId { get; set; }
         public Svatek? Svatek { get; set; }
 
     }

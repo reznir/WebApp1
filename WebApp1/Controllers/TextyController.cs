@@ -17,7 +17,7 @@ namespace WebApp1.Controllers
 
         public IActionResult Index(int svatekId)
         {
-            return View(CreateSvatkyModel(svatekId, TypId.LitText));
+            return View(CreateSvatkyModel(svatekId, TypId.Svatek));
         }
 
         /// <summary>
@@ -29,7 +29,8 @@ namespace WebApp1.Controllers
         public IActionResult Index(IFormCollection formCollection)
         {
             if (formCollection.ContainsKey("New"))
-            { return View(CreateSvatkyModel(-1,TypId.Svatek)); }
+            { return View("Edit", CreateSvatkyModel((int)AllNothing.None, TypId.Svatek)); }
+
             LitText litText = new();
             if (formCollection.ContainsKey("cyklus") && int.TryParse(formCollection["cyklus"], out int cyklus))
             { litText.Cyklus = ((Cyklus)cyklus).ToString(); }
@@ -40,7 +41,7 @@ namespace WebApp1.Controllers
             if (formCollection.ContainsKey("date") && DateTime.TryParse(formCollection["date"], out DateTime date))
             {
                 LiturgickyRok litRok = new LiturgickyRok(date);
-                litText.SvateId = litRok.GetSvatekId(date);
+                litText.SvatekId = litRok.GetSvatekId(date);
                 litText.Nazev_dne = litRok.NazevDne;
             }
 
@@ -49,7 +50,7 @@ namespace WebApp1.Controllers
             context.LitText.Add(litText);
             context.SaveChanges();
 
-            return View(CreateSvatkyModel(0,TypId.Svatek));
+            return View(CreateSvatkyModel((int)AllNothing.All, TypId.Svatek));
         }
 
         /// <summary>
@@ -63,32 +64,37 @@ namespace WebApp1.Controllers
         {
             List<LitText> litTexts = new();
 
-            if (id == 0)
-            { litTexts = context.LitText.ToList(); }
-            else
+            switch (id)
             {
-
-                switch (typId)
-                {
-                    case TypId.Doba:
-                        if (cyklus != null)
-                        { litTexts = context.LitText.Where(t => t.Svatek.DobaId == id && t.Cyklus == cyklus.ToString()).ToList(); }
-                        else
-                        { litTexts = context.LitText.Where(t => t.Svatek.DobaId == id).ToList(); }
-                        break;
-                    case TypId.Svatek:
-                        if (cyklus != null)
-                        { litTexts = context.LitText.Where(t => t.SvateId == id && t.Cyklus == cyklus.ToString()).ToList(); }
-                        else
-                        { litTexts = context.LitText.Where(t => t.SvateId == id).ToList(); }
-                        break;
-                    case TypId.LitText:
-                        if (cyklus.HasValue)
-                        { litTexts = context.LitText.Where(t => t.Id == id && t.Cyklus == cyklus.ToString()).ToList(); }
-                        else
-                        { litTexts = context.LitText.Where(t => t.Id == id).ToList(); }
-                        break;
-                }
+                case (int)AllNothing.None:
+                    litTexts = new();
+                    break;
+                case (int)AllNothing.All:
+                    litTexts = context.LitText.ToList();
+                    break;
+                default:
+                    switch (typId)
+                    {
+                        case TypId.Doba:
+                            if (cyklus != null)
+                            { litTexts = context.LitText.Where(t => t.Svatek.DobaId == id && t.Cyklus == cyklus.ToString()).ToList(); }
+                            else
+                            { litTexts = context.LitText.Where(t => t.Svatek.DobaId == id).ToList(); }
+                            break;
+                        case TypId.Svatek:
+                            if (cyklus != null)
+                            { litTexts = context.LitText.Where(t => t.SvatekId == id && t.Cyklus == cyklus.ToString()).ToList(); }
+                            else
+                            { litTexts = context.LitText.Where(t => t.SvatekId == id).ToList(); }
+                            break;
+                        case TypId.LitText:
+                            if (cyklus.HasValue)
+                            { litTexts = context.LitText.Where(t => t.Id == id && t.Cyklus == cyklus.ToString()).ToList(); }
+                            else
+                            { litTexts = context.LitText.Where(t => t.Id == id).ToList(); }
+                            break;
+                    }
+                    break;
             }
 
             SvatkyModel svatkyModel = new()
@@ -101,6 +107,57 @@ namespace WebApp1.Controllers
             return svatkyModel;
         }
 
+
+        public IActionResult Edit(int litTextId)
+        {
+            LitText selectedText = context.LitText.First(s => s.Id == litTextId);
+            ViewBag.SvatekId = selectedText.SvatekId;
+
+            if (Enum.TryParse(typeof(Cyklus), selectedText?.Cyklus, true, out object? cyklus)) //&& selectedSvatek?.Svatek?.Cykly ?? false
+            { ViewBag.Cyklus = (int)cyklus; }
+            else
+            { ViewBag.Cyklus = -1; }
+
+            return View(CreateSvatkyModel(litTextId, TypId.LitText));
+        }
+
+        [HttpPost]
+        public IActionResult Edit(IFormCollection formCollection)
+        {
+            LitText litText;
+
+            if (int.TryParse(formCollection["LitTextId"], out int litTextId) && context.LitText.First(t => t.Id == litTextId) is LitText editovanyText)
+            {
+                litText = editovanyText;
+                litText.Updated = DateTime.Now;
+            }
+            else
+            {
+                litText = new LitText();
+                litText.Created = DateTime.Now;
+                context.LitText.Add(litText);
+            }
+
+            litText.Text = formCollection["text"];
+
+            if (int.TryParse(formCollection["cyklus"], out int cyklusInt))
+            { litText.Cyklus = ((Cyklus)cyklusInt).ToString(); }
+            else
+            { litText.Cyklus = null; }
+
+            litText.SvatekId = int.Parse(formCollection["Svatek"]);
+
+            var svatek = context.Svatek.First(s => s.Id == litText.SvatekId);
+            if (int.TryParse(formCollection["den"], out int den) && den > -1)
+            { litText.Nazev_dne = $"{den} {svatek.Nazev_dne}"; }
+            else
+            { litText.Nazev_dne = svatek.Nazev_dne; }
+
+
+            context.SaveChanges();
+            return View("Index", CreateSvatkyModel(0, TypId.Doba));
+        }
+
         public IActionResult Delete(int textId)
         {
             var litText = context.LitText.FirstOrDefault(t => t.Id == textId);
@@ -108,7 +165,7 @@ namespace WebApp1.Controllers
             if (litText != null)
             {
                 context.LitText.Remove(litText);
-                litTexts = context.LitText.Where(t => t.SvateId == litText.SvateId).ToList();
+                litTexts = context.LitText.Where(t => t.SvatekId == litText.SvatekId).ToList();
             }
             var model = new SvatkyModel()
             {
@@ -127,7 +184,7 @@ namespace WebApp1.Controllers
 
         public IActionResult SvatekSelect(int id)
         {
-            var litTexts = context.LitText.Where(t => t.SvateId == id).ToList();
+            var litTexts = context.LitText.Where(t => t.SvatekId == id).ToList();
             ViewData[nameof(litTexts.Count)] = litTexts.Count;
             ViewData[nameof(litTexts)] = litTexts;
             return RedirectToAction(nameof(Index));
