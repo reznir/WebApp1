@@ -14,6 +14,9 @@ namespace WebApp1.Controllers
             context = Context ?? throw new ArgumentNullException();
         }
 
+        public IActionResult Selection() { return View(); }
+
+
         public IActionResult AtoN()
         {
             return View();

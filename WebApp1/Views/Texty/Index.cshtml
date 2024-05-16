@@ -24,9 +24,9 @@
 </head>
 <body>
     <div class="container">
-        @Html.Partial("SvatkyListView",Model)
+        @Html.Partial("SvatkyListView", Model)
         <div class="content">
-            @if (ViewData["Count"] as int? > 1)
+            @if (Model.LitTexty.Count > 1)
             {
                 <form method="post" asp-controller="Texty" asp-action="Index">
                     <div class="topControls">
@@ -36,9 +36,10 @@
                         <br>
                         Text <input type="text" name="searchText" value="hledat" />
                         <input type="submit" value="Hledat">
+                        <input type="submit" name="New" value="Nový" />
                     </div>
                 </form>
-                <table align="right" class=" table table-bordered table-striped" width="10%">
+                <table align="right" class=" table table-bordered table-striped" width="100%">
                     <thead>
                         <tr>
                             <th align="center">
@@ -56,7 +57,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach (var litText in ViewData["litTexts"] as List<LitText>)
+                        @foreach (LitText litText in Model.LitTexty)
                         {
                             <tr>
                                 <td width="10%">
@@ -66,15 +67,15 @@
                                     @litText?.Cyklus
                                 </td>
                                 <td width="50%">
-                                    @litText?.Text
+                                    @litText?.Text;
                                 </td>
                                 <td>
-                                    <a class="btn btn-primary table-striped-columns" asp-controller="Texty" asp-action="Index" asp-route-id="@litText?.Id">
+                                    <a class="btn btn-primary table-striped-columns" asp-controller="Texty" asp-action="Edit" asp-route-svatekId="@litText?.Id">
                                         Edit
                                     </a>
                                 </td>
                                 <td>
-                                    <a class="btn btn-primary table-striped-columns" asp-controller="Texty" asp-action="Delete" asp-route-id="@litText?.Id">
+                                    <a class="btn btn-primary table-striped-columns" asp-controller="Texty" asp-action="Delete" asp-route-SvatekId="@litText?.Id">
                                         Delete
                                     </a>
                                 </td>
@@ -82,6 +83,29 @@
                         }
                     </tbody>
                 </table>
+            }
+            else if (Model.LitTexty.Count == 1)
+            {
+                <form method="post" asp-controller="Texty" asp-action="Index">
+                    <div class="topControls">
+                        <label>Cyklus: </label>
+                        @Html.DropDownList("cyklus", @Html.GetEnumSelectList(typeof(Cyklus)))
+                        Datum <input type="date" id="datepicker" name="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                        <input type="submit" value="Ulozit">
+                    </div>
+                    <div class="editor">
+                        <textarea id="HtmlText" name="text">
+                            @Model.LitTexty[0].Text
+                                 </textarea>
+                        <script>
+                            tinymce.init({
+                                selector: 'textarea',
+                                plugins: 'save anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
+                                toolbar: 'save undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
+                            });
+                        </script>
+                    </div>
+                </form>
             }
             else
             {
@@ -97,8 +121,8 @@
                         <p>This is an example of <b>bold</b> text.</p>
                         <p>This is an example of <i>italic</i> text.</p>
                         <p>This is an example of <u>underlined</u> text.</p>
-                        <p>This is an example of a <a href="https://www.bing.com">link</a>.</p>
-                                                                    </textarea>
+                        <p>This is an example of a <a href="https://www.google.com">link</a>.</p>
+                        </textarea>
                         <script>
                             tinymce.init({
                                 selector: 'textarea',

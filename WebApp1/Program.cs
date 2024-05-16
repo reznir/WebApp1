@@ -6,7 +6,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
-builder.Services.AddDbContext<LitTextyDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("AmazonConnectionString")));
+builder.Services.AddDbContext<LitTextyDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("FreeAspConnectionString")));
+builder.Services.AddApplicationInsightsTelemetry();
 
 var app = builder.Build();
 

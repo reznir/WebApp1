@@ -72,7 +72,7 @@ namespace WebApp1.Models
         #endregion Vliv
 
         [Column("PENIZE")]
-        public decimal Penize { set; get; }
+        public double Penize { set; get; }
 
         [Column("SUROVINY")]
         public int Suroviny { get; set; }

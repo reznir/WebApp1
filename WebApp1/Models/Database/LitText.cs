@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebApp1.Models
@@ -17,6 +18,12 @@ namespace WebApp1.Models
 
         [Column("TEXT",TypeName ="NVARCHAR(MAX)")]
         public string? Text { get; set; }
+
+        [Column("Created")]
+        public DateTime Created { get; set; }
+
+        [Column("Updated")]
+        public DateTime? Updated { get; set; }
 
         [Column("SVATEK_ID"),ForeignKey("Svatek")]
         public int? SvateId { get; set; }

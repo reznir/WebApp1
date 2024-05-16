@@ -5,7 +5,7 @@
         public DateTime Velikonoce { get; set; }
         public DateTime PopelecniStreda { get; set; }
         public DateTime PrvniAdventni { get; set; }
-       public string NazevDne { get; set; }
+        public string NazevDne { get; set; }
 
         public LiturgickyRok(DateTime datum)
         {
@@ -95,7 +95,7 @@
         /// </summary>
         /// <param name="datum"></param>
         /// <returns></returns>
-       public int GetSvatekId(DateTime datum)
+        public int GetSvatekId(DateTime datum)
         {
             int svatekId;
 
@@ -287,6 +287,8 @@
 
             return svatekId;
         }
+
+        public Dictionary<int, string> DnyTydne { get; set; } = new() { { 1, "pondělí" }, { 2, "úterý" }, { 3, "středa" }, { 4, "čtvrtek" }, { 5, "pátek" }, { 6, "sobota" }, { 7, "neděle" } };
 
         ///END liturgickyRok class
     }

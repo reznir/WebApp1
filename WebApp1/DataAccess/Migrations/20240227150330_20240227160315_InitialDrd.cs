@@ -59,7 +59,8 @@ namespace WebApp1.DataAccess.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     NAME = table.Column<string>(type: "NVARCHAR(20)", nullable: false),
                     DESCRIPTION = table.Column<string>(type: "NVARCHAR(500)", nullable: false),
-                    POVOLANI_ID = table.Column<int>(type: "int", nullable: false)
+                    POVOLANI_ID = table.Column<int>(type: "int", nullable: false),
+                    PRAVIDLO = table.Column<int>(type: "NVARCHAR(50)", nullable: true)
                 },
                 constraints: table =>
                 {

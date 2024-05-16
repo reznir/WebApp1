@@ -102,7 +102,7 @@ namespace WebApp1.Controllers
                 { model.Hrdina.VlivJizva--; }
 
                 if (formData.ContainsKey(nameof(Hrdina.Penize)))
-                { model.Hrdina.Penize = Math.Round(decimal.Parse(formData[nameof(Hrdina.Penize)]), 2); }
+                { model.Hrdina.Penize = Math.Round(double.Parse(formData[nameof(Hrdina.Penize)]), 2); }
 
                 if (formData.ContainsKey($"{nameof(Hrdina)}.{nameof(Hrdina.Zbrane)}"))
                 { model.Hrdina.Zbrane = formData[$"{nameof(Hrdina)}.{nameof(Hrdina.Zbrane)}"]; }
