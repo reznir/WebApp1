@@ -23,7 +23,7 @@ namespace WebApp1.Models
         [Column("CYKLY")]
         public bool? Cykly { get;set; }
 
-        [Column("DOBA_ID"),ForeignKey("Doba")]        
+        [Column("DOBA_ID"), ForeignKey("Doba")]
         public int? DobaId { get; set; }
         public Doba? Doba { get; set; }
     }

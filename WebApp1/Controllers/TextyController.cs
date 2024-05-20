@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NuGet.Protocol;
+using System.Globalization;
+using System.Runtime.Serialization;
 using WebApp1.DataAccess;
 using WebApp1.Models;
 using WebApp1.Models.Texty;
@@ -17,11 +19,20 @@ namespace WebApp1.Controllers
 
         public IActionResult Index(int svatekId)
         {
-            return View(CreateSvatkyModel(svatekId, TypId.Svatek));
+            var model = CreateSvatkyModel();
+            if (svatekId == 0)
+            { model.LitTexty = [.. context.LitText]; }
+            else
+            {
+                model.LitTexty = [.. context.LitText.Where(t => t.SvatekId == svatekId)];
+                ViewBag.SvatekId = svatekId;
+            }
+
+            return View(model);
         }
 
         /// <summary>
-        /// Function for saving new LitText from FORM by button Ulozit
+        /// Displays Edit view or searches by specification of Cyklus, Date and text or combination of those info, based on user selection
         /// </summary>
         /// <param name="formCollection"></param>
         /// <returns></returns>
@@ -29,82 +40,89 @@ namespace WebApp1.Controllers
         public IActionResult Index(IFormCollection formCollection)
         {
             if (formCollection.ContainsKey("New"))
-            { return View("Edit", CreateSvatkyModel((int)AllNothing.None, TypId.Svatek)); }
-
-            LitText litText = new();
-            if (formCollection.ContainsKey("cyklus") && int.TryParse(formCollection["cyklus"], out int cyklus))
-            { litText.Cyklus = ((Cyklus)cyklus).ToString(); }
-
-            if (formCollection.ContainsKey("text"))
-            { litText.Text = formCollection["text"].ToString(); }
-
-            if (formCollection.ContainsKey("date") && DateTime.TryParse(formCollection["date"], out DateTime date))
+            { return View("Edit", CreateSvatkyModel()); }
+            else
             {
-                LiturgickyRok litRok = new LiturgickyRok(date);
-                litText.SvatekId = litRok.GetSvatekId(date);
-                litText.Nazev_dne = litRok.NazevDne;
+                var model = CreateSvatkyModel();
+
+                Cyklus? cyklus = null;
+                if (formCollection.ContainsKey("useCyklus") && int.TryParse(formCollection["cyklus"], out int cycleInt) && cycleInt > -1)
+                {
+                    cyklus = (Cyklus)cycleInt;
+                }
+
+                DateTime? date = null;
+                CultureInfo info = new CultureInfo("en-us");
+                if (formCollection.ContainsKey("useDatum") && DateTime.ParseExact(formCollection["date"].ToString(), "yyyy-MM-dd", info) is DateTime formDate)
+                {
+                    date = formDate;
+                }
+
+                int svatek = 0;
+                if (formCollection.ContainsKey("svatek") && int.TryParse(formCollection["svatek"].ToString(), out int svatekId) && svatekId > 0)
+                {
+                    svatek = svatekId;
+                    ViewBag.SvatekId = svatekId;
+                }
+
+                string text = null;
+                if (formCollection.ContainsKey("useText"))
+                {
+                    text = formCollection["searchText"];
+                }
+
+                model.LitTexty = SearchLitTexts(cyklus, date, text, svatek);
+
+                return View(model);
             }
 
-            ViewBag.NazevDne = litText.Nazev_dne;
-
-            context.LitText.Add(litText);
-            context.SaveChanges();
-
-            return View(CreateSvatkyModel((int)AllNothing.All, TypId.Svatek));
         }
 
         /// <summary>
         /// Creates model for most views used in this controller
         /// </summary>
-        /// <param name="id">ID of Doba, Svatek or LitText</param>
-        /// <param name="typId">Typ of ID specified by <see cref="TypId"/></param>
-        /// <param name="cyklus"><see cref="Cyklus"/> to search by. Can be null to search through all 3 cycles (ignore cycle asignment)</param>
-        /// <returns><see cref="SvatkyModel"/>which contains list of Doby, list of Svatky and list of LitTexts matching searching criterie (ID)</returns>
-        private SvatkyModel CreateSvatkyModel(int id, TypId typId, Cyklus? cyklus = null)
+        /// <returns><see cref="SvatkyModel"/>which contains list of Doby, list of Svatky and empty list of LitTexts</returns>
+        private SvatkyModel CreateSvatkyModel()
         {
-            List<LitText> litTexts = new();
-
-            switch (id)
-            {
-                case (int)AllNothing.None:
-                    litTexts = new();
-                    break;
-                case (int)AllNothing.All:
-                    litTexts = context.LitText.ToList();
-                    break;
-                default:
-                    switch (typId)
-                    {
-                        case TypId.Doba:
-                            if (cyklus != null)
-                            { litTexts = context.LitText.Where(t => t.Svatek.DobaId == id && t.Cyklus == cyklus.ToString()).ToList(); }
-                            else
-                            { litTexts = context.LitText.Where(t => t.Svatek.DobaId == id).ToList(); }
-                            break;
-                        case TypId.Svatek:
-                            if (cyklus != null)
-                            { litTexts = context.LitText.Where(t => t.SvatekId == id && t.Cyklus == cyklus.ToString()).ToList(); }
-                            else
-                            { litTexts = context.LitText.Where(t => t.SvatekId == id).ToList(); }
-                            break;
-                        case TypId.LitText:
-                            if (cyklus.HasValue)
-                            { litTexts = context.LitText.Where(t => t.Id == id && t.Cyklus == cyklus.ToString()).ToList(); }
-                            else
-                            { litTexts = context.LitText.Where(t => t.Id == id).ToList(); }
-                            break;
-                    }
-                    break;
-            }
-
             SvatkyModel svatkyModel = new()
             {
                 Doby = context.Doba.ToList(),
                 Svatky = context.Svatek.ToList(),
-                LitTexty = litTexts
+                LitTexty = new()
             };
 
             return svatkyModel;
+        }
+
+        /// <summary>
+        /// Constructs a query to find LitTexts which meet searching kriteria. If search criteria is null (or 0) it ignores them
+        /// </summary>
+        /// <param name="cyklus"></param>
+        /// <param name="date"></param>
+        /// <param name="searchText">full text search from body of PlainText</param>
+        /// <param name="svatekId"></param>
+        /// <returns>List of LitTexts that meet searching criteria</returns>
+        private List<LitText> SearchLitTexts(Cyklus? cyklus, DateTime? date, string searchText, int svatekId = 0)
+        {
+            IQueryable<LitText> query = context.LitText;
+
+            if (cyklus != null)
+            { query = query.Where(t => t.Cyklus == cyklus.ToString()); }
+
+            if (date != null)
+            {
+                string den = new LiturgickyRok(date.Value).NazevDne;
+                List<int> svateks = context.Svatek.Where(s => s.Nazev_dne == den).Select(s => s.Id).ToList();
+                query = query.Where(t => svateks.Contains(t.SvatekId));
+            }
+
+            if (svatekId > 0)
+            { query = query.Where(t => t.SvatekId == svatekId); }
+
+            if (!string.IsNullOrEmpty(searchText))
+            { query = query.Where(t => t.PlainText.Contains(searchText)); }
+
+            return query.ToList();
         }
 
 
@@ -118,7 +136,10 @@ namespace WebApp1.Controllers
             else
             { ViewBag.Cyklus = -1; }
 
-            return View(CreateSvatkyModel(litTextId, TypId.LitText));
+            var model = CreateSvatkyModel();
+            model.LitTexty = [selectedText];
+
+            return View(model);
         }
 
         [HttpPost]
@@ -139,6 +160,7 @@ namespace WebApp1.Controllers
             }
 
             litText.Text = formCollection["text"];
+            litText.PlainText = formCollection["textWithoutHtml"];
 
             if (int.TryParse(formCollection["cyklus"], out int cyklusInt))
             { litText.Cyklus = ((Cyklus)cyklusInt).ToString(); }
@@ -153,9 +175,11 @@ namespace WebApp1.Controllers
             else
             { litText.Nazev_dne = svatek.Nazev_dne; }
 
-
             context.SaveChanges();
-            return View("Index", CreateSvatkyModel(0, TypId.Doba));
+
+            var model = CreateSvatkyModel();
+            model.LitTexty = [.. context.LitText];
+            return View("Index", model);
         }
 
         public IActionResult Delete(int textId)

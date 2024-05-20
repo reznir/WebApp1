@@ -23,7 +23,7 @@
     </script>
 </head>
 
-<form method="post" asp-controller="Texty" asp-action="Edit">
+<form method="post" id="textForm" asp-controller="Texty" asp-action="Edit">
     <input type="hidden" name="LitTextId" value="@Model.LitTexty.FirstOrDefault()?.Id">
     <div class="topControls">
         <label>Cyklus: </label>
@@ -61,21 +61,20 @@
         @Html.DropDownList("den", dnySelectList)
         <br />
         Datum svatku <input type="date" id="datepicker" name="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
-        <input type="submit" value="Ulozit">
+        <input type="submit" id="submit" value="Ulozit">
     </div>
     <div class="editor">
         <textarea id="HtmlText" name="text">
             @if (Model.LitTexty.Count == 0)
             {
-            <p>This is an example of <b>bold</b> text.</p>
-            <p>This is an example of <i>italic</i> text.</p>
-            <p>This is an example of <u>underlined</u> text.</p>
-            <p>This is an example of a <a href="https://www.google.com">link</a>.</p>
+            <p>Příklad použití <b>tučného</b> text.</p>
+            <p>Příklad použití <i>kurzívy</i>.</p>
+            <p>Příklad použití <u>podtržení</u>.</p>
+            <p>Příklad použití odkazu na <a href="https://www.google.com"></a>.</p>
             }
             else
             {
-                @Model.LitTexty.First().Text
-                ;
+                @Model.LitTexty.First().Text;
             }
         </textarea>
         <script>
@@ -85,5 +84,18 @@
                 toolbar: 'save undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
             });
         </script>
-    </div>
+    </div>    
 </form>
+
+<script type="text/javascript">
+    document.getElementById("submit").addEventListener("click", function () {
+        var form = document.getElementById("textForm");
+        var newInput = document.createElement("input");
+        newInput.type = "hidden";
+        newInput.name = "textWithoutHtml";
+        newInput.value = tinymce.get("HtmlText").getContent({ format: "text" });
+         // myContent;
+        // alert(myContent);
+        form.appendChild(newInput);
+    });
+</script>

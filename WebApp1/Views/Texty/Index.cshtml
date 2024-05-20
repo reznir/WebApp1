@@ -24,124 +24,115 @@
 </head>
 <body>
     <div class="container">
-        @Html.Partial("SvatkyListView", Model)
+            @Html.Partial("SvatkyListView", Model)
         <div class="content">
-            @if (Model.LitTexty.Count > 1)
+            @{
+                var cykly = Enum.GetValues(typeof(Cyklus)).Cast<Cyklus>().Select(v => new SelectListItem
             {
-                <form method="post" asp-controller="Texty" asp-action="Index">
-                    <div class="topControls">
-                        <label>Cyklus: </label>
-                        @Html.DropDownList("cyklus", @Html.GetEnumSelectList(typeof(Cyklus)))
-                        Datum <input type="date" id="datepicker" name="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
-                        <br>
-                        Text <input type="text" name="searchText" value="hledat" />
-                        <input type="submit" value="Hledat">
-                        <input type="submit" name="New" value="Nový" />
-                    </div>
-                </form>
-                <table align="right" class=" table table-bordered table-striped" width="100%">
-                    <thead>
-                        <tr>
-                            <th align="center">
-                                <a asp-action="Index" asp-route-sort=@nameof(LitText.Svatek.Cely_nazev)>Svátek</a>
-                            </th>
-                            <th>
-                                <a asp-action="Index" asp-route-sort=@nameof(LitText.Cyklus)>@nameof(LitText.Cyklus)</a>
-                            </th>
-                            <th align="center">
-                                <a asp-action="Index" asp-route-sort=@nameof(LitText.Text)>@nameof(LitText.Text)</a>
-                            </th>
-                            <th align="center" colspan="2">
+                Text = v.ToString(),
+                Value = ((int)v).ToString()
+            }).ToList();
+                // Add an empty item at the start of the list
+                cykly.Insert(0, new SelectListItem
+            {
+                Text = "Žádný",
+                Value = "-1"
+            });
 
-                            </th>
+                var cyklySelectList = new SelectList(cykly, "Value", "Text", ViewBag.Cyklus);
+            }
+
+            <form method="post" asp-controller="Texty" asp-action="Index">
+                <div class="topControls">
+                    <input type="hidden" name="svatek" value="@ViewBag.SvatekId" />
+                    <label>Vyber na základě čeho hledat:</label>
+                    <br />
+                    <input type="checkbox" checked id="useCyklus" name="useCyklus" />
+                    <label>  </label>
+                    <label>Cyklus: </label>
+                    @Html.DropDownList("cyklus", cyklySelectList, new { id = "cyklusDropDown" })
+                    <br />
+                    <input type="checkbox" checked id="useDatum" name="useDatum" />
+                    Datum <input type="date" id="datepicker" name="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                    <br>
+                    <input type="checkbox" checked id="useText" name="useText" />
+                    Text <input type="text" id="text" name="searchText" value="hledat" />
+                    <br />
+                    <input type="submit" name="Search" value="Hledat">
+                    <input type="submit" name="New" value="Nový" />
+                </div>
+            </form>
+            <table align="right" class="table table-bordered table-striped" width="100%">
+                <thead>
+                    <tr>
+                        <th align="center">
+                            <a asp-action="Index" asp-route-sort=@nameof(LitText.Svatek.Cely_nazev)>Svátek</a>
+                        </th>
+                        <th>
+                            <a asp-action="Index" asp-route-sort=@nameof(LitText.Cyklus)>@nameof(LitText.Cyklus)</a>
+                        </th>
+                        <th align="center">
+                            <a asp-action="Index" asp-route-sort=@nameof(LitText.Text)>@nameof(LitText.Text)</a>
+                        </th>
+                        <th align="center" colspan="2">
+
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (LitText litText in Model.LitTexty)
+                    {
+                        <tr>
+                            <td width="15%">
+                                @litText?.Svatek?.Cely_nazev
+                            </td>
+                            <td width="5%">
+                                @litText?.Cyklus
+                            </td>
+                            <td width="75%">
+                                @litText?.PlainText;
+                            </td>
+                            <td>
+                                <a class="btn btn-primary table-striped-columns" asp-controller="Texty" asp-action="Edit" asp-route-litTextId="@litText?.Id">
+                                    Edit
+                                </a>
+                            </td>
+                            <td>
+                                <a class="btn btn-primary table-striped-columns" asp-controller="Texty" asp-action="Delete" asp-route-SvatekId="@litText?.Id">
+                                    Delete
+                                </a>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (LitText litText in Model.LitTexty)
-                        {
-                            <tr>
-                                <td width="10%">
-                                    @litText?.Svatek?.Cely_nazev
-                                </td>
-                                <td width="10%">
-                                    @litText?.Cyklus
-                                </td>
-                                <td width="50%">
-                                    @litText?.Text;
-                                </td>
-                                <td>
-                                    <a class="btn btn-primary table-striped-columns" asp-controller="Texty" asp-action="Edit" asp-route-litTextId="@litText?.Id">
-                                        Edit
-                                    </a>
-                                </td>
-                                <td>
-                                    <a class="btn btn-primary table-striped-columns" asp-controller="Texty" asp-action="Delete" asp-route-SvatekId="@litText?.Id">
-                                        Delete
-                                    </a>
-                                </td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            }
-            else if (Model.LitTexty.Count == 1)
-            {
-                <form method="post" asp-controller="Texty" asp-action="Index">
-                    <div class="topControls">
-                        <label>Cyklus: </label>
-                        @Html.DropDownList("cyklus", @Html.GetEnumSelectList(typeof(Cyklus)))
-                        Datum <input type="date" id="datepicker" name="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
-                        <input type="submit" value="Ulozit">
-                    </div>
-                    <div class="editor">
-                        <textarea id="HtmlText" name="text">
-                            @Model.LitTexty[0].Text
-                                 </textarea>
-                        <script>
-                            tinymce.init({
-                                selector: 'textarea',
-                                plugins: 'save anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
-                                toolbar: 'save undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
-                            });
-                        </script>
-                    </div>
-                </form>
-            }
-            else
-            {
-                <form method="post" asp-controller="Texty" asp-action="Index">
-                    <div class="topControls">
-                        <label>Cyklus: </label>
-                        @Html.DropDownList("cyklus", @Html.GetEnumSelectList(typeof(Cyklus)))
-                        Datum <input type="date" id="datepicker" name="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
-                        <input type="submit" value="Ulozit">
-                    </div>
-                    <div class="editor">
-                        <textarea id="HtmlText" name="text">
-                        <p>This is an example of <b>bold</b> text.</p>
-                        <p>This is an example of <i>italic</i> text.</p>
-                        <p>This is an example of <u>underlined</u> text.</p>
-                        <p>This is an example of a <a href="https://www.google.com">link</a>.</p>
-                        </textarea>
-                        <script>
-                            tinymce.init({
-                                selector: 'textarea',
-                                plugins: 'save anchor autolink charmap codesample emoticons image link lists media searchreplace table visualblocks wordcount',
-                                toolbar: 'save undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
-                            });
-                        </script>
-                    </div>
-                </form>
-            }
+                    }
+                </tbody>
+            </table>
         </div>
     </div>
+
+    <script type="text/javascript">
+        var cykly = document.getElementById("cyklusDropDown");
+        document.getElementById("useCyklus").addEventListener("change", function () {
+            cykly.disabled = !this.checked;
+        });
+
+        var datum = document.getElementById("datepicker");
+        document.getElementById("useDatum").addEventListener("change", function () {
+            datum.disabled = !this.checked;
+        });
+
+        var text = document.getElementById("text");
+        document.getElementById("useText").addEventListener("change", function () {
+            text.disabled = !this.checked;
+        });
+    </script>
+
     <style>
         .container {
             display: flex;
         }
 
         .nav {
-            width: 20%;
+            width: 20%; 
             padding: 10px;
         }
 

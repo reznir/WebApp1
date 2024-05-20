@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebApp1.DataAccess;
 
@@ -11,9 +12,11 @@ using WebApp1.DataAccess;
 namespace WebApp1.DataAccess.Migrations
 {
     [DbContext(typeof(LitTextyDbContext))]
-    partial class LitTextyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240517093305_PlainTextToLitText")]
+    partial class PlainTextToLitText
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -216,7 +219,7 @@ namespace WebApp1.DataAccess.Migrations
                         .HasColumnType("NVARCHAR(MAX)")
                         .HasColumnName("PLAIN_TEXT");
 
-                    b.Property<int>("SvatekId")
+                    b.Property<int?>("SvatekId")
                         .HasColumnType("int")
                         .HasColumnName("SVATEK_ID");
 
@@ -356,9 +359,7 @@ namespace WebApp1.DataAccess.Migrations
                 {
                     b.HasOne("WebApp1.Models.Svatek", "Svatek")
                         .WithMany()
-                        .HasForeignKey("SvatekId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("SvatekId");
 
                     b.Navigation("Svatek");
                 });

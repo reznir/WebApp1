@@ -34,7 +34,7 @@ Response.Cache.SetCacheability(HttpCacheability.Public);
                             @foreach (Svatek svatek in Model.Svatek.Where(s => s.DobaId == doba.Id).ToList())
                             {
                                 <li><a asp-controller="Texty" asp-action=Index asp-route-svatekId=@svatek.Id> @svatek.Cely_nazev</a></li>
-                            }
+                            } 
                         </ul>
                     </li>
                 }
