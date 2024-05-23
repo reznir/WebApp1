@@ -26,6 +26,7 @@
 <form method="post" id="textForm" asp-controller="Texty" asp-action="Edit">
     <input type="hidden" name="LitTextId" value="@Model.LitTexty.FirstOrDefault()?.Id">
     <div class="topControls">
+        <h4>Vyber jak má být svátek uložen</h4>
         <label>Cyklus: </label>
         @{
             var cykly = Enum.GetValues(typeof(Cyklus)).Cast<Cyklus>().Select(v => new SelectListItem
@@ -36,7 +37,7 @@
             // Add an empty item at the start of the list
             cykly.Insert(0, new SelectListItem
             {
-                Text = "Žádný",
+                Text = "Všechny",
                 Value = "-1"
             });
             var cyklySelectList = new SelectList(cykly, "Value", "Text", ViewBag.Cyklus);
@@ -55,12 +56,16 @@
             var dnySelectList = new SelectList(dny, "Value", "Text");
         }
         @Html.DropDownList("cyklus", cyklySelectList)
-        <label>Svatek: </label>
-        @Html.DropDownList("Svatek", new SelectList(Model.Svatky, nameof(Svatek.Id), nameof(Svatek.Cely_nazev), ViewBag.SvatekId))
-        <label>případně den v týdnu</label>
-        @Html.DropDownList("den", dnySelectList)
         <br />
-        Datum svatku <input type="date" id="datepicker" name="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+        <input type="radio" checked id="useSvatek" value="svatek" name="selection" />
+        <label>Svatek: </label>
+        @Html.DropDownList("Svatek", new SelectList(Model.Svatky, nameof(Svatek.Id), nameof(Svatek.Cely_nazev), ViewBag.SvatekId), new { id = "svatekDropDown" })
+        <label>případně den v týdnu</label>
+        @Html.DropDownList("den", dnySelectList, new { id = "denTydneDropDown" })
+        <br />
+        <input type="radio" id="useDatum" value="datum" name="selection" />
+        Datum svatku <input type="date" disabled id="datepicker" name="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+        <br />
         <input type="submit" id="submit" value="Ulozit">
     </div>
     <div class="editor">
@@ -70,7 +75,7 @@
             <p>Příklad použití <b>tučného</b> text.</p>
             <p>Příklad použití <i>kurzívy</i>.</p>
             <p>Příklad použití <u>podtržení</u>.</p>
-            <p>Příklad použití odkazu na <a href="https://www.google.com"></a>.</p>
+            <p>Příklad použití odkazu na <a href="https://www.google.com">google</a>.</p>
             }
             else
             {
@@ -87,7 +92,23 @@
     </div>    
 </form>
 
+
 <script type="text/javascript">
+    var datum = document.getElementById("datepicker");
+    var svatek = document.getElementById("svatekDropDown");
+    var denTydne = document.getElementById("denTydneDropDown");
+    document.getElementById("useDatum").addEventListener("change", function () {
+        datum.disabled = !this.checked;
+        svatek.disabled = this.checked;
+        denTydne.disabled = this.checked;
+    });
+    document.getElementById("useSvatek").addEventListener("change", function () {
+        svatek.disabled = !this.checked;
+        denTydne.disabled = !this.checked;
+        datum.disabled = this.checked;
+    });
+
+    //
     document.getElementById("submit").addEventListener("click", function () {
         var form = document.getElementById("textForm");
         var newInput = document.createElement("input");

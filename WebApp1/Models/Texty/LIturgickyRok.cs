@@ -2,10 +2,27 @@
 {
     public class LiturgickyRok
     {
+        /// <summary>
+        /// Datum velikonocni nedele
+        /// </summary>
         public DateTime Velikonoce { get; set; }
+        /// <summary>
+        /// Datum popelecni stredy
+        /// </summary>
         public DateTime PopelecniStreda { get; set; }
+        /// <summary>
+        /// Datum prvni adventni nedele
+        /// </summary>
         public DateTime PrvniAdventni { get; set; }
+        /// <summary>
+        /// Cely nazev dne ve formatu "dayOfWeek NazevDne".
+        /// Pokud neni svatek na cely tyden nezacina NazevDne cislem.
+        /// </summary>
         public string NazevDne { get; set; }
+        /// <summary>
+        /// Nazev tydne nebo svatku bez poradoveho cisla dne v tydnu na rozdil od <see cref="NazevDne"/>
+        /// </summary>
+        public string TypSvatku { get; set; }
 
         public LiturgickyRok(DateTime datum)
         {
@@ -92,9 +109,10 @@
 
         /// <summary>
         /// Z velikonoc a 1. advetni nedele urci NAZEV_DNE a ID pro tabulku SVATEK
+        /// Vyplni promene NaevDne a TypSvatku
         /// </summary>
         /// <param name="datum"></param>
-        /// <returns></returns>
+        /// <returns>int cislo svatku (ID v databazi v tabulce SVATEK)</returns>
         public int GetSvatekId(DateTime datum)
         {
             int svatekId;
@@ -102,66 +120,67 @@
             int poradiTydne = PoradiTydneVLiturgickemRoce(datum);
             if (datum.Equals(new DateTime(datum.Year, 1, 1)))
             {
-                NazevDne = "matkyBozi";
+                TypSvatku = NazevDne = "matkyBozi";
                 svatekId = 11;
             }
             else if (datum.Equals(new DateTime(datum.Year, 1, 6)))
             {
-                NazevDne = "zjeveni";
+                TypSvatku = NazevDne = "zjeveni";
                 svatekId = 13;
             }
             else if (datum.Equals(new DateTime(datum.Year, 12, 25)))
             {
-                NazevDne = "narozeni";
+                TypSvatku = NazevDne = "narozeni";
                 svatekId = 9;
             }
             else if (datum.Equals(new DateTime(datum.Year, 12, 8)))
             {
-                NazevDne = "bohorodicky";
+                TypSvatku = NazevDne = "bohorodicky";
                 svatekId = 103;
             }
             //svata rodina
             else if (poradiTydne == 5 && datum.DayOfWeek.Equals(DayOfWeek.Sunday))
             {
-                NazevDne = "rodiny";
+                TypSvatku = NazevDne = "rodiny";
                 svatekId = 10;
             }
             else if (poradiTydne == 5 && datum.Equals(new DateTime(datum.Year, 12, 30)))
             {
-                NazevDne = "rodiny";
+                TypSvatku = NazevDne = "rodiny";
                 svatekId = 10;
             }
             else if (datum.Equals(new DateTime(datum.Year, 12, 27)))
             {
-                NazevDne = "jana";
+                TypSvatku = NazevDne = "jana";
                 svatekId = 104;
             }
             else if (datum.Equals(new DateTime(datum.Year, 12, 28)))
             {
-                NazevDne = "mladatek";
+                TypSvatku = NazevDne = "mladatek";
                 svatekId = 105;
             }
             //stepan
             else if (datum.Equals(new DateTime(datum.Year, 12, 26)))
             {
-                NazevDne = "stepana";
+                TypSvatku = NazevDne = "stepana";
                 svatekId = 106;
             }
             //nedele mezi 1.6. a 13.1.
             else if (datum > new DateTime(datum.Year, 1, 6) && datum < new DateTime(datum.Year, 1, 14) && datum.DayOfWeek.Equals(DayOfWeek.Sunday))
             {
-                NazevDne = "krtuPane";
+                TypSvatku = NazevDne = "krtuPane";
                 svatekId = 14;
             }
             //advent
             else if (poradiTydne <= 4)
             {
-                NazevDne = (int)datum.DayOfWeek + " adventni" + poradiTydne;
+                TypSvatku = $"adventni{poradiTydne}";
+                NazevDne = string.Concat((int)datum.DayOfWeek," ",TypSvatku);
                 svatekId = poradiTydne;
             }
             else if (poradiTydne == 6 && datum.DayOfYear < 7)
             {
-                NazevDne = "2poNarozeniPane";
+                TypSvatku = NazevDne = "2poNarozeniPane";
                 svatekId = 12;
             }
             //else if (poradiTydne == 7 && datum.DayOfYear < 14)
@@ -169,13 +188,13 @@
             // svatekId = 14;}
             else if (poradiTydne == 52)
             {
-                NazevDne = "krale";
+                TypSvatku = NazevDne = "krale";
                 svatekId = 107;
             }
             //velikonoce
             else if (datum == PopelecniStreda)
             {
-                NazevDne = nameof(PopelecniStreda);
+                TypSvatku = NazevDne = nameof(PopelecniStreda);
                 svatekId = 17;
             }
             else if (datum > PopelecniStreda && datum < Velikonoce.AddDays(7 * 10))
@@ -183,82 +202,85 @@
                 int dnuOdPopelecniStredy = datum.Subtract(PopelecniStreda).Days;
                 if (dnuOdPopelecniStredy < 4)
                 {
-                    NazevDne = (int)datum.DayOfWeek + "poPopelecni";
+                    TypSvatku = NazevDne = (int)datum.DayOfWeek + "poPopelecni";
                     svatekId = (int)datum.DayOfWeek + 107; //107 bude ofset indexu v databazi pro dny po popelecni strede
                 }
                 else if ((dnuOdPopelecniStredy - 4) / 7 < 5)
                 {
-                    NazevDne = "postni" + ((dnuOdPopelecniStredy - 4) / 7 + 1);
+                    TypSvatku = NazevDne = "postni" + ((dnuOdPopelecniStredy - 4) / 7 + 1);
                     svatekId = (dnuOdPopelecniStredy - 4) / 7 + 1 + 17; //17 je posun, kde zacina id postnich tydnu
                 }
                 else if (dnuOdPopelecniStredy == 39)
                 {
-                    NazevDne = "kvetna";
+                    TypSvatku = NazevDne = "kvetna";
                     svatekId = 24;
                 }
                 else if (dnuOdPopelecniStredy < 43)
                 {
-                    NazevDne = (int)datum.DayOfWeek + " svatehoTydne";
+                    TypSvatku = "svatehoTydne";
+                    NazevDne = string.Concat((int)datum.DayOfWeek, " ",TypSvatku);
                     svatekId = 25;
                 }
                 else if (dnuOdPopelecniStredy == 43)
                 {
-                    NazevDne = "zeleny";
+                    TypSvatku = NazevDne = "zeleny";
                     svatekId = 26;
                 }
                 else if (dnuOdPopelecniStredy == 44)
                 {
-                    NazevDne = "velky";
+                    TypSvatku = NazevDne = "velky";
                     svatekId = 27;
                 }
                 else if (dnuOdPopelecniStredy == 45)
                 {
-                    NazevDne = "bila";
+                    TypSvatku = NazevDne = "bila";
                     svatekId = 28;
                 }
                 else if (dnuOdPopelecniStredy == 46)
                 {
-                    NazevDne = "zmrtvychvstani";
+                    TypSvatku = NazevDne = "zmrtvychvstani";
                     svatekId = 30;
                 }
                 else if (dnuOdPopelecniStredy == 85)
                 {
-                    NazevDne = "nanebevstoupeni";
+                    TypSvatku = NazevDne = "nanebevstoupeni";
                     svatekId = 38;
                 }
                 else if ((dnuOdPopelecniStredy - 4) / 7 < 13)
                 {
-                    NazevDne = (int)datum.DayOfWeek + " velikonocni" + ((dnuOdPopelecniStredy - 4) / 7 - 5);
+                    TypSvatku = $"velikonocni{(dnuOdPopelecniStredy - 4) / 7 - 5}";
+                    NazevDne = string.Concat((int)datum.DayOfWeek, " ",TypSvatku);
                     svatekId = (dnuOdPopelecniStredy - 4) / 7 - 5 + 30;//30 je offset indexu v databazi prvni velikonocni nedele
                 }
                 else if (dnuOdPopelecniStredy == 95)
                 {
-                    NazevDne = "seslaniDucha";
+                    TypSvatku = NazevDne = "seslaniDucha";
                     svatekId = 39;
                 }
                 else if (dnuOdPopelecniStredy == 102)
                 {
-                    NazevDne = "nejsvetejsi3";
+                    TypSvatku = NazevDne = "nejsvetejsi3";
                     svatekId = 40;
                 }
                 else if (dnuOdPopelecniStredy == 106)
                 {
-                    NazevDne = "telaKrve";
+                    TypSvatku = NazevDne = "telaKrve";
                     svatekId = 41;
                 }
                 else if (dnuOdPopelecniStredy == 114)
                 {
-                    NazevDne = "srdceJezisova";
+                    TypSvatku = NazevDne = "srdceJezisova";
                     svatekId = 42;
                 }
                 else if (dnuOdPopelecniStredy == 115)
                 {
-                    NazevDne = "neposkvrneneSrdce";
+                    TypSvatku = NazevDne = "neposkvrneneSrdce";
                     svatekId = 43;
                 }
                 else
                 {
-                    NazevDne = (int)datum.DayOfWeek + " mezidobi" + (poradiTydne - 18);
+                    TypSvatku = $"mezidobi{poradiTydne - 18}";
+                    NazevDne = string.Concat((int)datum.DayOfWeek, " ", TypSvatku);
                     svatekId = poradiTydne - 18 + 43;// 43 je ofset indexu v databazi pro druhou nedeli v mezidobi
                 }
 
@@ -268,8 +290,9 @@
             {
                 //datum = datum.AddDays(-7 * 13.5);
                 {
-                    NazevDne = (int)datum.DayOfWeek + " mezidobi" + (poradiTydne - 18);
-                    svatekId = poradiTydne - 18 + 43;
+                    TypSvatku = $"mezidobi{poradiTydne - 18}";
+                    NazevDne = string.Concat((int)datum.DayOfWeek," ",TypSvatku);
+                    svatekId = poradiTydne - 18 + 43;// 43 je ofset indexu v databazi pro druhou nedeli v mezidobi
                 }
             }
 
@@ -280,7 +303,8 @@
                     poradiTydne++;
                 //datum = datum.AddDays(-7 * 8);
                 {
-                    NazevDne = (int)datum.DayOfWeek + " mezidobi" + (poradiTydne - 6);
+                    TypSvatku = $"mezidobi{poradiTydne - 6}";
+                    NazevDne = string.Concat((int)datum.DayOfWeek, " ", TypSvatku);
                     svatekId = poradiTydne - 6 + 43;
                 }
             }

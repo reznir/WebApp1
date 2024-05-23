@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.SqlServer.Server;
 using NuGet.Protocol;
 using System.Globalization;
 using System.Runtime.Serialization;
 using WebApp1.DataAccess;
 using WebApp1.Models;
 using WebApp1.Models.Texty;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WebApp1.Controllers
 {
@@ -39,6 +41,13 @@ namespace WebApp1.Controllers
         [HttpPost]
         public IActionResult Index(IFormCollection formCollection)
         {
+            int svatek = 0;
+            if (formCollection.ContainsKey("svatek") && int.TryParse(formCollection["svatek"].ToString(), out int svatekId) && svatekId > 0)
+            {
+                svatek = svatekId;
+                ViewBag.SvatekId = svatekId;
+            }
+
             if (formCollection.ContainsKey("New"))
             { return View("Edit", CreateSvatkyModel()); }
             else
@@ -56,13 +65,6 @@ namespace WebApp1.Controllers
                 if (formCollection.ContainsKey("useDatum") && DateTime.ParseExact(formCollection["date"].ToString(), "yyyy-MM-dd", info) is DateTime formDate)
                 {
                     date = formDate;
-                }
-
-                int svatek = 0;
-                if (formCollection.ContainsKey("svatek") && int.TryParse(formCollection["svatek"].ToString(), out int svatekId) && svatekId > 0)
-                {
-                    svatek = svatekId;
-                    ViewBag.SvatekId = svatekId;
                 }
 
                 string text = null;
@@ -111,8 +113,10 @@ namespace WebApp1.Controllers
 
             if (date != null)
             {
-                string den = new LiturgickyRok(date.Value).NazevDne;
-                List<int> svateks = context.Svatek.Where(s => s.Nazev_dne == den).Select(s => s.Id).ToList();
+                var kalendar = new LiturgickyRok(date.Value);
+                kalendar.GetSvatekId(date.Value);
+                string den = kalendar.TypSvatku;
+                List<int> svateks = context.Svatek.Where(s => s.Nazev_dne.Contains(den)).Select(s => s.Id).ToList();
                 query = query.Where(t => svateks.Contains(t.SvatekId));
             }
 
@@ -162,13 +166,25 @@ namespace WebApp1.Controllers
             litText.Text = formCollection["text"];
             litText.PlainText = formCollection["textWithoutHtml"];
 
-            if (int.TryParse(formCollection["cyklus"], out int cyklusInt))
+            if (int.TryParse(formCollection["cyklus"], out int cyklusInt) && cyklusInt > -1)
             { litText.Cyklus = ((Cyklus)cyklusInt).ToString(); }
             else
             { litText.Cyklus = null; }
 
-            litText.SvatekId = int.Parse(formCollection["Svatek"]);
+            //SvatekId by drop down or from Date
+            switch (formCollection["selection"])
+            {
+                case "svatek":
+                    if (int.TryParse(formCollection["Svatek"], out int svatekId))
+                    { litText.SvatekId = svatekId; }
+                    break;
+                case "datum":
+                    if (DateTime.ParseExact(formCollection["date"].ToString(), "yyyy-MM-dd", new CultureInfo("en-us")) is DateTime formDate)
+                    { litText.SvatekId = new LiturgickyRok(formDate).GetSvatekId(formDate); }
+                    break;
+            }  
 
+            //Nazev Dne
             var svatek = context.Svatek.First(s => s.Id == litText.SvatekId);
             if (int.TryParse(formCollection["den"], out int den) && den > -1)
             { litText.Nazev_dne = $"{den} {svatek.Nazev_dne}"; }
@@ -180,6 +196,13 @@ namespace WebApp1.Controllers
             var model = CreateSvatkyModel();
             model.LitTexty = [.. context.LitText];
             return View("Index", model);
+        }
+
+        private LiturgickyRok FindSvatek(DateTime date)
+        {
+            var kalendar = new LiturgickyRok(date);
+            kalendar.GetSvatekId(date);
+            return kalendar;
         }
 
         public IActionResult Delete(int textId)

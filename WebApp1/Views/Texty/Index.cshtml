@@ -24,7 +24,7 @@
 </head>
 <body>
     <div class="container">
-            @Html.Partial("SvatkyListView", Model)
+        @Html.Partial("SvatkyListView", Model)
         <div class="content">
             @{
                 var cykly = Enum.GetValues(typeof(Cyklus)).Cast<Cyklus>().Select(v => new SelectListItem
@@ -35,7 +35,7 @@
                 // Add an empty item at the start of the list
                 cykly.Insert(0, new SelectListItem
             {
-                Text = "Žádný",
+                Text = "Všechny",
                 Value = "-1"
             });
 
@@ -90,7 +90,16 @@
                                 @litText?.Cyklus
                             </td>
                             <td width="75%">
-                                @litText?.PlainText;
+                                @if (litText.PlainText.Length > 300)
+                                {
+                                    @litText.PlainText.Substring(0, 300)
+                                    ;
+                                }
+                                else
+                                {
+                                    @litText?.PlainText
+                                    ;
+                                }
                             </td>
                             <td>
                                 <a class="btn btn-primary table-striped-columns" asp-controller="Texty" asp-action="Edit" asp-route-litTextId="@litText?.Id">
@@ -132,14 +141,20 @@
         }
 
         .nav {
-            width: 20%; 
+            width: 20%;
             padding: 10px;
+            flex: 0 0 20%;
         }
 
         .content {
             width: 80%;
             padding: 10px;
         }
+
+            .content table {
+                width: 100%; /* Force the table to take up the full width within the content area */
+                table-collapse: collapse;
+            }
 
         .topControls {
             margin-bottom: 20px;
