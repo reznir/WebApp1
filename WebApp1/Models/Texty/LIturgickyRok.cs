@@ -203,7 +203,7 @@
                 if (dnuOdPopelecniStredy < 4)
                 {
                     TypSvatku = NazevDne = (int)datum.DayOfWeek + "poPopelecni";
-                    svatekId = (int)datum.DayOfWeek + 107; //107 bude ofset indexu v databazi pro dny po popelecni strede
+                    svatekId = (int)datum.DayOfWeek -3 + 107; //107 bude ofset indexu v databazi pro dny po popelecni strede, -3 protoze pocitame od stredy (3. den v tydnu)
                 }
                 else if ((dnuOdPopelecniStredy - 4) / 7 < 5)
                 {
@@ -281,7 +281,7 @@
                 {
                     TypSvatku = $"mezidobi{poradiTydne - 18}";
                     NazevDne = string.Concat((int)datum.DayOfWeek, " ", TypSvatku);
-                    svatekId = poradiTydne - 18 + 43;// 43 je ofset indexu v databazi pro druhou nedeli v mezidobi
+                    svatekId = poradiTydne - 18 + 43 -1;// 43 je ofset indexu v databazi pro druhou nedeli v mezidobi, -1 protoze tydny zacinaji s 2 a pricist je potreba jenom 1
                 }
 
             }
@@ -292,7 +292,7 @@
                 {
                     TypSvatku = $"mezidobi{poradiTydne - 18}";
                     NazevDne = string.Concat((int)datum.DayOfWeek," ",TypSvatku);
-                    svatekId = poradiTydne - 18 + 43;// 43 je ofset indexu v databazi pro druhou nedeli v mezidobi
+                    svatekId = poradiTydne - 18 + 43 -1;// 43 je ofset indexu v databazi pro druhou nedeli v mezidobi, -1 protoze tydny zacinaji s 2 a pricist je potreba jenom 1
                 }
             }
 
@@ -305,7 +305,7 @@
                 {
                     TypSvatku = $"mezidobi{poradiTydne - 6}";
                     NazevDne = string.Concat((int)datum.DayOfWeek, " ", TypSvatku);
-                    svatekId = poradiTydne - 6 + 43;
+                    svatekId = poradiTydne - 6 + 43 -1;// 43 je ofset indexu v databazi pro druhou nedeli v mezidobi, -1 protoze tydny zacinaji s 2 a pricist je potreba jenom 1
                 }
             }
 

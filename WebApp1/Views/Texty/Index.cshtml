@@ -50,7 +50,7 @@
                     <input type="checkbox" checked id="useCyklus" name="useCyklus" />
                     <label>  </label>
                     <label>Cyklus: </label>
-                    @Html.DropDownList("cyklus", cyklySelectList, new { id = "cyklusDropDown" })
+                    @Html.DropDownList("cyklus", cyklySelectList, new { id = "cyklusDropDown"})
                     <br />
                     <input type="checkbox" checked id="useDatum" name="useDatum" />
                     Datum <input type="date" id="datepicker" name="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
@@ -97,8 +97,7 @@
                                 }
                                 else
                                 {
-                                    @litText?.PlainText
-                                    ;
+                                    @litText?.PlainText;
                                 }
                             </td>
                             <td>

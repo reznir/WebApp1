@@ -160,7 +160,8 @@ namespace WebApp1.Controllers
 
         public IActionResult Delete(int id)
         {
-            Context.Hrdina.Remove(Context.Hrdina.First(p => p.ID == id));
+            //Context.Hrdina.Remove(Context.Hrdina.First(p => p.ID == id));
+            Context.Hrdina.First(h => h.ID == id).Name = string.Concat(Context.Hrdina.First(h => h.ID == id).Name, " deleted");
             Context.SaveChanges();
             return View("Index", Context.Hrdina.ToList());
         }
