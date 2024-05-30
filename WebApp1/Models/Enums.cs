@@ -21,4 +21,10 @@ namespace WebApp1.Models
         None = -1,
         All = 0
     }
+
+    public enum Logic
+    {
+        And = 0,
+        Or = 1,
+    }
 }

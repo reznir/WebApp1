@@ -51,15 +51,24 @@
                     <label>  </label>
                     <label>Cyklus: </label>
                     @Html.DropDownList("cyklus", cyklySelectList, new { id = "cyklusDropDown"})
+                    <select id="logicCykly" name="logicCykly">
+                        <option value="or">nebo</option>
+                        <option value="and">a</option>
+                    </select>
                     <br />
                     <input type="checkbox" checked id="useDatum" name="useDatum" />
                     Datum <input type="date" id="datepicker" name="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
+                    <select id="logicDate" name="logicDate">
+                        <option value="or">nebo</option>
+                        <option value="and">a</option>
+                    </select>
                     <br>
                     <input type="checkbox" checked id="useText" name="useText" />
                     Text <input type="text" id="text" name="searchText" value="hledat" />
                     <br />
                     <input type="submit" name="Search" value="Hledat">
                     <input type="submit" name="New" value="Nový" />
+                    <input type="submit" name="Clear" value="Reset vyhledávání" />
                 </div>
             </form>
             <table align="right" class="table table-bordered table-striped" width="100%">
@@ -119,18 +128,23 @@
 
     <script type="text/javascript">
         var cykly = document.getElementById("cyklusDropDown");
+        var cyklyLogic = document.getElementById("logicCykly");
         document.getElementById("useCyklus").addEventListener("change", function () {
             cykly.disabled = !this.checked;
+            cyklyLogic.disabled = !this.checked;
         });
 
         var datum = document.getElementById("datepicker");
+        var datumLogic = document.getElementById("logicDate")
         document.getElementById("useDatum").addEventListener("change", function () {
             datum.disabled = !this.checked;
+            datumLogic.disabled = !this.checked
         });
 
         var text = document.getElementById("text");
         document.getElementById("useText").addEventListener("change", function () {
             text.disabled = !this.checked;
+            datumLogic.disabled = !this.checked;
         });
     </script>
 

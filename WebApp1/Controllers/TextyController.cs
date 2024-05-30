@@ -50,21 +50,38 @@ namespace WebApp1.Controllers
 
             if (formCollection.ContainsKey("New"))
             { return View("Edit", CreateSvatkyModel()); }
+            else if (formCollection.ContainsKey("Clear"))
+            {
+                var model = CreateSvatkyModel();
+                model.LitTexty = [.. context.LitText];
+                ViewBag.SvatekId = null;
+                return View(model);
+            }
             else
             {
                 var model = CreateSvatkyModel();
 
                 Cyklus? cyklus = null;
+                Logic logicCyklus = Logic.And;
                 if (formCollection.ContainsKey("useCyklus") && int.TryParse(formCollection["cyklus"], out int cycleInt) && cycleInt > -1)
                 {
                     cyklus = (Cyklus)cycleInt;
+                    if (formCollection["logicCykly"].ToString().ToUpper() == Logic.And.ToString().ToUpper())
+                    { logicCyklus = Logic.And; }
+                    else
+                    { logicCyklus = Logic.Or; }
                 }
 
                 DateTime? date = null;
+                Logic logicDate = Logic.And;
                 CultureInfo info = new CultureInfo("en-us");
                 if (formCollection.ContainsKey("useDatum") && DateTime.ParseExact(formCollection["date"].ToString(), "yyyy-MM-dd", info) is DateTime formDate)
                 {
                     date = formDate;
+                    if (formCollection["logicDate"].ToString().ToUpper() == Logic.And.ToString().ToUpper())
+                    { logicDate = Logic.And; }
+                    else
+                    { logicDate = Logic.Or; }
                 }
 
                 string text = null;
@@ -73,7 +90,7 @@ namespace WebApp1.Controllers
                     text = formCollection["searchText"];
                 }
 
-                model.LitTexty = SearchLitTexts(cyklus, date, text, svatek);
+                model.LitTexty = SearchLitTexts(cyklus, logicCyklus, date, logicDate, text, svatek);
 
                 return View(model);
             }
@@ -104,7 +121,7 @@ namespace WebApp1.Controllers
         /// <param name="searchText">full text search from body of PlainText</param>
         /// <param name="svatekId"></param>
         /// <returns>List of LitTexts that meet searching criteria</returns>
-        private List<LitText> SearchLitTexts(Cyklus? cyklus, DateTime? date, string searchText, int svatekId = 0)
+        private List<LitText> SearchLitTexts(Cyklus? cyklus, Logic logicCyklus, DateTime? date, Logic logicDate, string searchText, int svatekId = 0)
         {
             IQueryable<LitText> query = context.LitText;
 
@@ -117,14 +134,22 @@ namespace WebApp1.Controllers
                 kalendar.GetSvatekId(date.Value);
                 string den = kalendar.TypSvatku;
                 List<int> svateks = context.Svatek.Where(s => s.Nazev_dne.Contains(den)).Select(s => s.Id).ToList();
-                query = query.Where(t => svateks.Contains(t.SvatekId));
+                if (logicCyklus == Logic.And)
+                { query = query.Where(t => svateks.Contains(t.SvatekId)); }
+                else
+                { query = query.Concat(context.LitText.Where(t => svateks.Contains(t.SvatekId))).Distinct(); }
             }
 
             if (svatekId > 0)
             { query = query.Where(t => t.SvatekId == svatekId); }
 
             if (!string.IsNullOrEmpty(searchText))
-            { query = query.Where(t => t.PlainText.Contains(searchText)); }
+            {
+                if (logicDate == Logic.And)
+                { query = query.Where(t => t.PlainText.Contains(searchText)); }
+                else
+                { query = query.Concat(context.LitText.Where(t => t.PlainText.Contains(searchText))).Distinct(); }
+            }
 
             return query.ToList();
         }
@@ -182,7 +207,7 @@ namespace WebApp1.Controllers
                     if (DateTime.ParseExact(formCollection["date"].ToString(), "yyyy-MM-dd", new CultureInfo("en-us")) is DateTime formDate)
                     { litText.SvatekId = new LiturgickyRok(formDate).GetSvatekId(formDate); }
                     break;
-            }  
+            }
 
             //Nazev Dne
             var svatek = context.Svatek.First(s => s.Id == litText.SvatekId);
