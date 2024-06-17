@@ -66,7 +66,6 @@
         <input type="radio" id="useDatum" value="datum" name="selection" />
         Datum svatku <input type="date" disabled id="datepicker" name="date" value="@DateTime.Now.ToString("yyyy-MM-dd")" />
         <br />
-        <input type="submit" id="submit" value="Ulozit">
     </div>
     <div class="editor">
         <textarea id="HtmlText" name="text">
@@ -89,7 +88,8 @@
                 toolbar: 'save undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat',
             });
         </script>
-    </div>    
+    </div>
+    <input type="submit" id="submit" value="Ulozit">
 </form>
 
 

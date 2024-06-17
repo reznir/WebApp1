@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Primitives;
 using System.Text.RegularExpressions;
 using WebApp1.DataAccess;
@@ -17,8 +19,20 @@ namespace WebApp1.Controllers
             Context = context ?? throw new ArgumentNullException();
         }
 
+        [Authorize(Policy = "AuthZPolicy")]
         public IActionResult Index()
         {
+            //if (!User.Identity.IsAuthenticated)
+            //{
+            //    return Challenge(
+            //        properties: new AuthenticationProperties
+            //        {
+            //            RedirectUri = Url.Action("MainPage", "Texty"), // Set the redirect URI after successful authentication
+            //        },
+            //        authenticationScheme: _configuration["AzureAd:ChallengeScheme"] // Replace with your scheme name
+            //    );
+            //}
+
             List<Hrdina> hrdinove = Context.Hrdina.ToList();
             return View(hrdinove);
         }

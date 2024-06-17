@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.SqlServer.Server;
 using NuGet.Protocol;
 using System.Globalization;
@@ -10,6 +11,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace WebApp1.Controllers
 {
+
     public class TextyController : Controller
     {
         private readonly LitTextyDbContext context;

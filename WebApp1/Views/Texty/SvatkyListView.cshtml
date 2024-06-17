@@ -10,7 +10,7 @@
                 <ul class="nested">
                     @foreach (Svatek svatek in Model.Svatky.Where(s => s.DobaId == doba.Id).ToList())
                     {
-                        <li><a asp-controller="Texty" asp-action=Index asp-route-svatekId=@svatek.Id asp-route-name=@Model.LitTexty> @svatek.Cely_nazev</a></li> @**@
+                        <li><a asp-controller="Texty" asp-action=Index asp-route-svatekId=@svatek.Id> @svatek.Cely_nazev</a></li> @*asp-route-name=@Model.LitTexty*@
                     }
                 </ul>
             </li>
