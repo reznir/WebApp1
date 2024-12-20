@@ -167,6 +167,12 @@ namespace WebApp1.Controllers
         private void AddableAbilities(HrdinaModel model)
         {
             List<int> hrdinovaPovolaniIds = model.Povolani.Select(p => p.ID).ToList();
+
+            foreach (var povolani in model.HrdinovaPovolani)
+            {
+                if (povolani.Level <= model.Schopnosti.Count(s => s.PovolaniId == povolani.PovolaniId))
+                { hrdinovaPovolaniIds.Remove(povolani.PovolaniId); }
+            }
             var schopnosts = Context.Schopnost.Where(s => hrdinovaPovolaniIds.Contains(s.PovolaniId) && !model.Schopnosti.Contains(s)).OrderBy(s => s.Name).ToList();
             ViewBag.AllSchopnost = schopnosts;
             ViewBag.PossiblePovolani = Context.Povolani.Where(p => model.PossiblePovolani(model.HrdinovaPovolani).Contains(p.ID));
